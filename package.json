@@ -1,7 +1,7 @@
 {
   "name": "express-react-redux-starter",
   "version": "1.0.0",
-  "description": "Starter for Express, React, Redux, SCSS applications",
+  "description": "MMALIVE",
   "scripts": {
     "dev": "webpack-dev-server --config ./webpack/webpack-dev.config.js --watch --colors",
     "build": "rm -rf dist && webpack --config ./webpack/webpack-prod.config.js --colors",
@@ -28,7 +28,7 @@
     "type": "git",
     "url": "git+https://github.com/DimitriMikadze/express-react-redux-starter"
   },
-  "author": "Dimitri Mikadze",
+  "author": "EP",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.8.0",
@@ -59,11 +59,15 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "express": "^4.13.4",
+    "firebase": "^3.6.4",
     "react": "^15.0.2",
     "react-dom": "^15.0.2",
     "react-redux": "^4.4.5",
     "react-router": "^2.4.0",
-    "redux": "^3.5.2"
+    "redux": "^3.5.2",
+    "redux-form": "^6.4.2",
+    "redux-thunk": "^2.1.0"
   }
 }
