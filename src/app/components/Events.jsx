@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Firebase from 'firebase';
 import { Link } from 'react-router';
+import { currentFightNum } from '../classes/insert.js';
 
 class Events extends Component {
   constructor (props) {
@@ -9,6 +10,7 @@ class Events extends Component {
     this.state = {
       events : []
     };
+    this.getEventList();
   }
   getEventList() {
     var ref = Firebase.database().ref('events/');
@@ -17,26 +19,41 @@ class Events extends Component {
     ref.once('value', function (snapshot) {
       snapshot.forEach(function(data) {
         var event = data.val();
-        var eventObj = {
-          date: event.date,
-          event_title: event.event_title,
-          event_url: event.event_url,
-          location: event.location,
-          status: event.status
-        };
-        events.push(eventObj);
+
+        if (event.upcoming) {
+          let liveEvent = new Promise (function
+          (resolve, reject) {
+            var controllerRef = Firebase.database().ref('controller/events/'+event.event_url);
+            controllerRef.once('value').then(function (controllerData) {
+              var controllerEvent = controllerData.val();
+              var fight_num = controllerEvent.fight_num;
+              var eventObj = {
+                date: event.date,
+                event_title: event.event_title,
+                event_url: event.event_url,
+                location: event.location,
+                status: event.status,
+                fight_num: fight_num
+              };
+              console.log(eventObj, 'eventObj');
+              events.push(eventObj);
+              that.setState({events: events})
+            });
+          }
+        );
+        }
       });
-      that.setState({events: events});
+
     });
   }
 
   render() {
-    this.getEventList();
-    console.log(this.props);
+
+    console.log(this.state.events, 'events state');
     return (
       <div className ="compcontainer">
-        <nav className="navbar fixed-top second-navbar center-element drop-shadow">
-          <h5><small>Events</small></h5>
+        <nav className="navbar fixed-top second-navbar center-element drop-shadow2">
+          <h4><small>Events</small></h4>
         </nav>
         <div className="bg-cover">
           <div className="row below-second-nav">
@@ -47,7 +64,7 @@ class Events extends Component {
                     return  <li className="list-group-item" key={i}>
                               <div className="clearfix">
                                 <div className="float-left">
-                                  <Link to ={'play/' + item.event_url}><h5>{item.event_title}</h5></Link>
+                                  <Link to ={'play/' + item.event_url + '/' + item.fight_num}><h5>{item.event_title}</h5></Link>
                                 </div>
                                 <div className="float-right">
                                   <h5 className="live-font">{item.status}</h5>

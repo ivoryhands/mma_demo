@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Firebase from 'firebase';
 import { Link } from 'react-router';
-import { insert } from '../classes/insert.js'
+import { insert, moduleController } from '../classes/insert.js'
 
 class Play extends Component {
   constructor (props) {
@@ -39,14 +39,35 @@ class Play extends Component {
       final_pick_class: 'playTitle center-element',
       header_text: 'Make Your Selection',
       disabled_round_btn: false,
-      event_url
+      event_url,
+      controller: ''
     };
     var event_url = this.props.params.splat;
     console.log(event_url, 'eventurl');
     var event_url_split = event_url.split('/');
-    console.log(event_url_split[1], 'event_url');
-    this.preEvent(event_url);
+    console.log(event_url_split[0], 'event_url_split');
+    this.preEvent(event_url_split[0]);
+
+    this.eventStartListener(event_url_split[0]);
+
+
     console.log(this.props, 'uid');
+  }
+  eventStartListener (url) {
+    var that = this;
+    var controllerObj = {};
+    var eventStatusRef = Firebase.database().ref('controller/events/' + url);
+    eventStatusRef.on('value', function(snapshot) {
+      var event = snapshot.val();
+      var controllerObj = {
+        event_status: event.event_status,
+        fight_status: event.fight_status,
+        round: event.round,
+        fight_num: event.fight_num
+      };
+      console.log(controllerObj, 'internal promise');
+      that.setState({controller: controllerObj});
+    });
   }
   nameSplit(name) {
     this.name = name;
@@ -171,7 +192,7 @@ class Play extends Component {
     return (
 
       <div className ="compcontainer bg-cover">
-        <nav className="navbar fixed-top second-navbar center-element drop-shadow">
+        <nav className="navbar fixed-top second-navbar center-element drop-shadow2">
           <h4><small>{this.state.header_text}</small></h4>
         </nav>
         <div>

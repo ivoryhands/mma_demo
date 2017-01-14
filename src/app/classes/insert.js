@@ -18,3 +18,45 @@ export function insert (fighter_pick,method_pick,round_pick,uid,event_url, curre
   }
   writeEventData(postData, fight_pointer, uid, event_url);
 }
+
+export function currentFightNum () {
+  var controllerRef = Firebase.database().ref('controller/' + postId + '/starCount');
+  starCountRef.on('value', function(snapshot) {
+    updateStarCount(postElement, snapshot.val());
+  });
+}
+
+/*export function eventStartListener (url) {
+  return new Promise (function (resolve) {
+      var eventStatusRef = Firebase.database().ref('controller/events/' + url);
+      eventStatusRef.on('value', function(snapshot) {
+        var event = snapshot.val();
+        var controllerObj = {
+          event_status: event.event_status,
+          fight_status: event.fight_status,
+          round: event.round,
+          fight_num: event.fight_num
+        };
+        resolve(controllerObj);
+      });
+  });
+}*/
+export function eventStartListener (url) {
+  var eventStatusRef = Firebase.database().ref('controller/events/' + url);
+  eventStatusRef.on('value', function(snapshot) {
+    var event = snapshot.val();
+    var controllerObj = {
+      event_status: event.event_status,
+      fight_status: event.fight_status,
+      round: event.round,
+      fight_num: event.fight_num
+    };
+    console.log(controllerObj, 'external promise');
+    //moduleController(controllerObj);
+  });
+}
+
+export function moduleController (Obj) {
+  console.log(Obj, 'moduleController');
+
+}
