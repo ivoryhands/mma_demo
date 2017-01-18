@@ -109,7 +109,7 @@ export function initProfile(user) {
 
 export function initUser() {
   return function (dispatch) {
-    var user = Firebase.auth().currentUser;
+    //var user = Firebase.auth().currentUser;
     if (user) {
       dispatch(initProfile(user));
     }
@@ -133,15 +133,16 @@ export function getUser() {
 }
 //VERIFY IF TOKEN STILL VALID WHEN PAGE RELOADED
 export function verifyAuth() {
-  console.log('verify!');
   return function (dispatch) {
+    console.log('verify stage 1');
     Firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log('user auth!');
+        //console.log('verify stage 2!');
         dispatch(initProfile(user));
         dispatch(authUser());
       }
       else {
+        console.log("signed out!!");
         dispatch(signOutUser());
       }
     });

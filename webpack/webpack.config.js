@@ -70,6 +70,7 @@ module.exports = (options) => {
       contentBase: Path.join(__dirname, '../'),
       hot: true,
       port: options.port,
+      host: "0.0.0.0",
       inline: true,
       progress: true,
       historyApiFallback: true,

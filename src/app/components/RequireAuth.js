@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import Firebase from 'firebase';
 
 export default function(WrappedComponent) {
   class Auth extends React.Component {
@@ -10,6 +11,7 @@ export default function(WrappedComponent) {
 
         for (let key in localStorage) {
           if (key.startsWith("firebase:authUser:")) {
+
             hasLocalStorageUser = true;
           }
         }
@@ -21,12 +23,17 @@ export default function(WrappedComponent) {
     }
 
     render() {
-      return <WrappedComponent {...this.props} />
+      if (!this.props.uid) {
+        return <div>Loading...</div>
+      }
+      return <WrappedComponent {...this.props}/>
     }
   }
 
   function mapStateToProps(state) {
-    return { authenticated: state.auth.authenticated };
+    return {  authenticated: state.auth.authenticated,
+              uid: state.user.uid
+     };
   }
 
   return connect(mapStateToProps)(Auth);

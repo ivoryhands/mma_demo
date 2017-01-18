@@ -130,6 +130,36 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
     font-family: 'Open Sans Condensed', sans-serif;
 }
 
+.blocks-small {
+  padding: 6px 0px 6px 0px;
+  margin: 0px;
+  border-radius: 0;
+  background: none;
+  /*background-color:rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid #ffffff;*/
+  border: none;
+  outline: none;
+  cursor:pointer;
+  color: white;
+  /*font-size: 12px;*/
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+
+.blocks-small-selected {
+  padding: 6px 0px 6px 0px;
+  margin: 0px;
+  border-radius: 0;
+  background: none;
+  /*background-color:rgba(0, 0, 0, 0.6);*/
+  border-bottom: 1px solid #ffffff;
+  border: none;
+  outline: none;
+  cursor:pointer;
+  color: green;
+  /*font-size: 12px;*/
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+
 .blocks-fighter {
     padding: 12px 36px 12px 36px;
     margin: 0;
@@ -213,7 +243,7 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
 }
 
 .intro {
-  height: 90vh;
+  height: 100vh;
 }
 
 footer {
@@ -266,6 +296,12 @@ section {
   background-attachment: fixed;
   min-height: 100vh;
 
+}
+
+.bg-black {
+  background-color: black;
+  min-height: 100 vh;
+  background-size: cover;
 }
 
 .full-screen {
@@ -363,6 +399,16 @@ section {
   height: auto;
 }
 
+.fightList ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.margin-auto {
+  margin: auto;
+}
+
 .profile-top {
   margin: auto;
   text-align: center;
@@ -457,6 +503,24 @@ body {
   margin-bottom: 2rem;
 }
 
+.one-spacer {
+  height: 1.5rem;
+}
+
+.loading-cont {
+  display:table; 					/* today */
+  display:flex;
+  display:-webkit-flex;  			/* tomorrow & only for body */
+  height:100%;					/* today & tomorrow */
+  width:100%;						/* today only */
+  margin:0;
+}
+
+.loading {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
 /**********************************************
 * SPINNER
 **********************************************/
@@ -513,4 +577,43 @@ body {
     transform: scaleY(1.0);
     -webkit-transform: scaleY(1.0);
   }
+}
+
+/**********************************************
+* LIVECONSOLE
+**********************************************/
+
+.animate {
+  -webkit-animation: maskIn 3s;
+  -webkit-mask-size: 400px;
+}
+
+@-webkit-keyframes blurIn {
+  0% {
+    -webkit-filter: blur(1em);
+  } 100% {
+    -webkit-filter: blur(0);
+  }
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  } 100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  } 100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes maskIn {
+	0% {
+		-webkit-mask-position: 0px 0px;
+	}
+	100% {
+		-webkit-mask-position: 400px 400px;
+	}
 }

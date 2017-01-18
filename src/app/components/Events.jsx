@@ -19,7 +19,6 @@ class Events extends Component {
     ref.once('value', function (snapshot) {
       snapshot.forEach(function(data) {
         var event = data.val();
-
         if (event.upcoming) {
           let liveEvent = new Promise (function
           (resolve, reject) {
@@ -64,7 +63,7 @@ class Events extends Component {
                     return  <li className="list-group-item" key={i}>
                               <div className="clearfix">
                                 <div className="float-left">
-                                  <Link to ={'play/' + item.event_url + '/' + item.fight_num}><h5>{item.event_title}</h5></Link>
+                                  <Link to ={ 'play/' + item.event_url }><h5>{item.event_title}</h5></Link>
                                 </div>
                                 <div className="float-right">
                                   <h5 className="live-font">{item.status}</h5>
