@@ -75,6 +75,7 @@ class LiveConsole extends Component {
       });
       that.setState({fightList: fightListArr});
     });
+    //console.log(fightListArr);
 
 
 
@@ -110,20 +111,38 @@ class LiveConsole extends Component {
     }
   }
   handleFightPicks(event) {
-    //console.log(event.target.value, event.target.name, event.target.id, 'fightpickshandler');
+    console.log(event.target.value, event.target.name, event.target.id, 'fightpickshandler');
     var a = this.state.fightList;
     var i = parseInt(event.target.id);
 
-    a[i] = {
-              winner: event.target.value,
-              blue: a[i].blue,
-              method_pick: a[i].red,
-              round_pick: a[i].round_pick,
-              red: a[i].red,
-              total_round: a[i].total_rounds
-            };
+    if (event.target.name === "method") {
+      a[i] =  {
+                winner: a[i].winner,
+                blue: a[i].blue,
+                method_pick: event.target.value,
+                round_pick: a[i].round_pick,
+                red: a[i].red,
+                total_rounds: a[i].total_rounds
+              };
+    }
+    else if (event.target.name === "round") {
+
+    }
+    else {
+      a[i] = {
+                winner: event.target.value,
+                blue: a[i].blue,
+                method_pick: a[i].red,
+                round_pick: a[i].round_pick,
+                red: a[i].red,
+                total_rounds: a[i].total_rounds
+              };
+
+
+    }
 
     this.setState({fightList: a});
+
 
   }
 
@@ -178,50 +197,45 @@ export default LiveConsole = connect(mapStateToProps)(LiveConsole);
 
 function Picks(props) {
   console.log(props, 'picks');
-
+  const KNOCKOUT="KNOCKOUT";
+  const SUBMISSION="SUBMISSION";
+  const DECISION="DECISION";
   return (
-        <div className="card blank outline">
-          <div className="card-block">
+        <div className="card blank  bg-50">
+
             <div className="center-element fightList">
               <ul>
                 {props.fightList.map((item, i) => {
-                  return  <form key={i}>
-                            <div className="row">
-                              <div className="col-sm-5">
-                                {item.winner===item.red ?
-                                  <input type="button" className="blocks-small-selected" name="red" id={i} value={item.red} onClick={props.onChangeFighter}/> :
-                                  <input type="button" className="blocks-small" name="red" id={i} value={item.red} onClick={props.onChangeFighter}/>}
-                              </div>
-                              <div className="col-sm-2">VS</div>
-                              <div className="col-sm-5">
-                                {item.winner===item.blue ?
-                                  <input type="button" className="blocks-small-selected" name="blue" id={i} value={item.blue} onClick={props.onChangeFighter}/> :
-                                  <input type="button" className="blocks-small" name="blue" id={i} value={item.blue} onClick={props.onChangeFighter}/>}
-                              </div>
-                            </div>
-                            <div className="row">
-                              <div className="col-sm-5">
-                                <div className="form-group">
-                                  <label htmlFor="exampleSelect1">Method</label>
-                                  <select className="form-control" id="exampleSelect1">
-                                    <option>KNOCKOUT</option>
-                                    <option>SUBMISSION</option>
-                                    <option>DECISION</option>
-                                  </select>
+                  return  <div className="col-sm-6 margin-bot" key={i}>
+                              <div className="card-block outline">
+                                <div className="col-sm-5">
+                                  {item.winner===item.red ?
+                                    <input type="button" className="blocks-small-selected" name="red" id={i} value={item.red} onClick={props.onChangeFighter}/> :
+                                    <input type="button" className="blocks-small" name="red" id={i} value={item.red} onClick={props.onChangeFighter}/>}
+                                </div>
+                                <div className="col-sm-2 vs">VS</div>
+                                <div className="col-sm-5">
+                                  {item.winner===item.blue ?
+                                    <input type="button" className="blocks-small-selected" name="blue" id={i} value={item.blue} onClick={props.onChangeFighter}/> :
+                                    <input type="button" className="blocks-small" name="blue" id={i} value={item.blue} onClick={props.onChangeFighter}/>}
+                                </div>
+                                <div className="col-sm-12">
+                                  <div className="form-group">
+                                    <label htmlFor="exampleSelect1">Method</label>
+                                    <select className="form-control select-center" id={i} name="method" onChange={props.onChangeFighter} value={item.method_pick}>
+                                        <option value="" disabled>--SELECT WIN METHOD--</option>
+                                        <option value="KNOCKOUT">KNOCKOUT</option>
+                                        <option value="SUBMISSION">SUBMISSION</option>
+                                        <option value="DECISION">DECISION</option>
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
-                              <div className="col-sm-2">|</div>
-                              <div className="col-sm-5">
-                                Round
-
-                              </div>
-                          </div>
-                          </form>
-
+                            </div>
                 })}
               </ul>
             </div>
-          </div>
+
         </div>
 
   );

@@ -77,12 +77,26 @@ a:active {
     FONT STUFF
 ************************************************/
 
+.select-center {
+  text-align-last:center;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+}
+
 .live-font {
   color: #EE543A
 }
 
 .text-right {
   text-align: right
+}
+.text-left {
+  text-align: left
+}
+
+.vs {
+  padding-top: 8px;
+  padding-bottom: 6px
 }
 
 .playTitle {
@@ -157,6 +171,7 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
   cursor:pointer;
   color: #EE543A;
   font-size: 18px;
+  font-weight: bold;
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
@@ -291,12 +306,14 @@ section {
 }
 /***********************************************/
 .bg-cover {
-  background: url('./images/mma-jaula.jpg');
+  background: url('./images/mma-50.png');
   background-size: cover;
   background-attachment: fixed;
   min-height: 100vh;
 
 }
+
+
 
 .bg-black {
   background-color: black;
@@ -521,6 +538,11 @@ body {
   vertical-align: middle;
   text-align: center;
 }
+
+.bg-50 {
+  background-color: rgba(0,0,0,0.75);
+}
+
 /**********************************************
 * SPINNER
 **********************************************/
