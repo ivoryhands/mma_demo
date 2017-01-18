@@ -141,7 +141,7 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
   outline: none;
   cursor:pointer;
   color: white;
-  /*font-size: 12px;*/
+  font-size: 18px;
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
@@ -155,8 +155,8 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
   border: none;
   outline: none;
   cursor:pointer;
-  color: green;
-  /*font-size: 12px;*/
+  color: #EE543A;
+  font-size: 18px;
   font-family: 'Open Sans Condensed', sans-serif;
 }
 

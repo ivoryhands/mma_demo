@@ -110,22 +110,21 @@ class LiveConsole extends Component {
     }
   }
   handleFightPicks(event) {
-    console.log(event.target.value, event.target.name, event.target.id, 'fightpickshandler');
-    var ref = Firebase.database().ref('picks');
-    var postData={
-      color: event.target.value,
-      fighter: event.target.name
-    };
+    //console.log(event.target.value, event.target.name, event.target.id, 'fightpickshandler');
+    var a = this.state.fightList;
+    var i = parseInt(event.target.id);
 
-    function writeEventData(postData, fight_pointer, event_url, uid) {
-      var newPostKey = Firebase.database().ref().child('picks').push().key;
-      var updates = {};
-      console.log(newPostKey);
-      console.log(fight_pointer, 'fight pointer!');
-      updates['/picks/'+uid+'/'+event_url+'/'+fight_pointer+'/'] = postData;
-      return Firebase.database().ref().update(updates);
-    }
-    writeEventData(postData, event.target.id, this.props.event_url, this.props.uid);
+    a[i] = {
+              winner: event.target.value,
+              blue: a[i].blue,
+              method_pick: a[i].red,
+              round_pick: a[i].round_pick,
+              red: a[i].red,
+              total_round: a[i].total_rounds
+            };
+
+    this.setState({fightList: a});
+
   }
 
   render () {
@@ -179,31 +178,37 @@ export default LiveConsole = connect(mapStateToProps)(LiveConsole);
 
 function Picks(props) {
   console.log(props, 'picks');
+
   return (
         <div className="card blank outline">
           <div className="card-block">
             <div className="center-element fightList">
               <ul>
                 {props.fightList.map((item, i) => {
-                  return  <form onChange={props.onChangeFighter} key={i}>
+                  return  <form key={i}>
                             <div className="row">
                               <div className="col-sm-5">
-                                {item.winner ? <input type="button" className="blocks-small-selected" name="red" id={i} value={item.red}/> : <input type="button" className="blocks-small" name="red" id={i} value={item.red}/>}
-
+                                {item.winner===item.red ?
+                                  <input type="button" className="blocks-small-selected" name="red" id={i} value={item.red} onClick={props.onChangeFighter}/> :
+                                  <input type="button" className="blocks-small" name="red" id={i} value={item.red} onClick={props.onChangeFighter}/>}
                               </div>
                               <div className="col-sm-2">VS</div>
                               <div className="col-sm-5">
-                                <input type="button" className="blocks-small" name="blue" id={i} value={item.blue}/>
+                                {item.winner===item.blue ?
+                                  <input type="button" className="blocks-small-selected" name="blue" id={i} value={item.blue} onClick={props.onChangeFighter}/> :
+                                  <input type="button" className="blocks-small" name="blue" id={i} value={item.blue} onClick={props.onChangeFighter}/>}
                               </div>
                             </div>
                             <div className="row">
                               <div className="col-sm-5">
-                                Method
-                                <select multiple className="form-control" id="methood">
-                                  <option>KNOCKOUT</option>
-                                  <option>SUBMISSION</option>
-                                  <option>DECISION</option>
-                                </select>
+                                <div className="form-group">
+                                  <label htmlFor="exampleSelect1">Method</label>
+                                  <select className="form-control" id="exampleSelect1">
+                                    <option>KNOCKOUT</option>
+                                    <option>SUBMISSION</option>
+                                    <option>DECISION</option>
+                                  </select>
+                                </div>
                               </div>
                               <div className="col-sm-2">|</div>
                               <div className="col-sm-5">
