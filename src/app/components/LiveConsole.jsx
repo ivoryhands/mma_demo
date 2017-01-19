@@ -16,6 +16,9 @@ class LiveConsole extends Component {
       rounds_three: ['1', '2', '3'],
       rounds_five: ['1', '2', '3', '4', '5']
     };
+
+  }
+  componentDidMount() {
     this.getFightList();
   }
 
@@ -126,13 +129,20 @@ class LiveConsole extends Component {
               };
     }
     else if (event.target.name === "round") {
-
+      a[i] =  {
+                winner: a[i].winner,
+                blue: a[i].blue,
+                method_pick: a[i].method_pick,
+                round_pick: event.target.value,
+                red: a[i].red,
+                total_rounds: a[i].total_rounds
+              };
     }
     else {
       a[i] = {
                 winner: event.target.value,
                 blue: a[i].blue,
-                method_pick: a[i].red,
+                method_pick: a[i].method_pick,
                 round_pick: a[i].round_pick,
                 red: a[i].red,
                 total_rounds: a[i].total_rounds
@@ -206,28 +216,48 @@ function Picks(props) {
             <div className="center-element fightList">
               <ul>
                 {props.fightList.map((item, i) => {
-                  return  <div className="col-sm-6 margin-bot" key={i}>
+                  return  <div className="col-md-6 margin-bot" key={i}>
                               <div className="card-block outline">
-                                <div className="col-sm-5">
+                                <div className="col-md-5">
                                   {item.winner===item.red ?
                                     <input type="button" className="blocks-small-selected" name="red" id={i} value={item.red} onClick={props.onChangeFighter}/> :
                                     <input type="button" className="blocks-small" name="red" id={i} value={item.red} onClick={props.onChangeFighter}/>}
                                 </div>
-                                <div className="col-sm-2 vs">VS</div>
-                                <div className="col-sm-5">
+                                <div className="col-md-2 vs">VS</div>
+                                <div className="col-md-5">
                                   {item.winner===item.blue ?
                                     <input type="button" className="blocks-small-selected" name="blue" id={i} value={item.blue} onClick={props.onChangeFighter}/> :
                                     <input type="button" className="blocks-small" name="blue" id={i} value={item.blue} onClick={props.onChangeFighter}/>}
                                 </div>
-                                <div className="col-sm-12">
+                                <div className="col-md-12">
                                   <div className="form-group">
-                                    <label htmlFor="exampleSelect1">Method</label>
+                                    <label htmlFor="methodSelect">Method</label>
                                     <select className="form-control select-center" id={i} name="method" onChange={props.onChangeFighter} value={item.method_pick}>
                                         <option value="" disabled>--SELECT WIN METHOD--</option>
                                         <option value="KNOCKOUT">KNOCKOUT</option>
                                         <option value="SUBMISSION">SUBMISSION</option>
                                         <option value="DECISION">DECISION</option>
                                     </select>
+                                  </div>
+                                </div>
+                                <div className="col-md-12">
+                                  <div className="form-group">
+                                    <label htmlFor="roundSelect">Round</label>
+                                    {item.total_rounds === "3" ?
+                                      <select className="form-control select-center" id={i} name="round" onChange={props.onChangeFighter} value={item.round_pick}>
+                                          <option value="" disabled>--SELECT ROUND--</option>
+                                          <option value="1">ROUND 1</option>
+                                          <option value="2">ROUND 2</option>
+                                          <option value="3">ROUND 3</option>
+                                      </select> :
+                                      <select className="form-control select-center" id={i} name="round" onChange={props.onChangeFighter} value={item.round_pick}>
+                                          <option value="" disabled>--SELECT ROUND--</option>
+                                          <option value="1">ROUND 1</option>
+                                          <option value="2">ROUND 2</option>
+                                          <option value="3">ROUND 3</option>
+                                          <option value="3">ROUND 4</option>
+                                          <option value="3">ROUND 5</option>
+                                      </select>}
                                   </div>
                                 </div>
                               </div>

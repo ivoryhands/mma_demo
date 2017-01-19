@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import Intermission from './Intermission.jsx';
 import Fight from './Fight.jsx';
 import Tally from './Tally.jsx';
-
+import Spinner from './Spinner.jsx';
 
 
 class Play extends Component {
@@ -18,60 +18,33 @@ class Play extends Component {
       uidIsLoaded: false,
       preEventIsLoaded: false,
       eventStartListenerIsLoaded: false,
-
+      fight_pick_name: ''
     };
-    /*  Get Event from URL
-    *   @params event_url = event URL from props
-    *   @params event_url_split = parse event key
-    */
-    var event_url = this.props.params.splat;
-    var event_url_split = event_url.split('/');
-
-      this.eventStartListener(event_url_split[0]);
-
-
-
-      /*  Listen for Tally Changes from Firebase
-      *   @params tallyListener
-      */
-      this.tallyListener(event_url_split[0]);
-
-      /*  Listen for Controller Changes from Firebase
-      *   @params eventStartListener
-      */
-
-
-
+    console.log(this.props.uid, 'holla');
   }
 
+  componentDidMount() {
+    var event_url = this.props.params.splat;
+    var event_url_split = event_url.split('/');
+    this.eventStartListener(event_url_split[0]);
+    this.tallyListener(event_url_split[0]);
+  }
   tallyListener(url) {
 
     localStorage.setItem('tally', 'false');
-    //this.setState({tally: false});
-    /*Firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        var tallyStatusRef = Firebase.database().ref('users/' + url + '/' + user.uid);
-        tallyStatusRef.on('value', function(snapshot) {
-          console.log(snapshot.val());
-          var tally = snapshot.val().tally;
-          that.setState({tally: tally});
-        });
-
-      } else {
-         //No user is signed in.
-      }
-    });*/
 
   }
   eventStartListener (url) {
     /*  Listen for Controller changes from Firebase and put into state
     *   @params controllerObj = holds current Controller Object from Firebase
     */
+    console.log('eventListener');
     var that = this;
     var controllerObj = {};
     var eventStatusRef = Firebase.database().ref('controller/events/' + url);
     eventStatusRef.on('value', function(snapshot) {
       var event = snapshot.val();
+      console.log(event, url, 'event snap')
       var controllerObj = {
         event_status: event.event_status,
         fight_status: event.fight_status,
@@ -79,10 +52,31 @@ class Play extends Component {
         fight_num: event.fight_num
       };
       //console.log(controllerObj, event.fight_num, 'internal promise');
-      that.setState({controller: controllerObj, fight_pointer: event.fight_num, event_url: url});
+      const fightNumber = parseInt(event.fight_num) +1;
+      console.log('fightpointer', event.fight_num);
+      that.setState({controller: controllerObj, fight_pointer: event.fight_num, event_url: url, fightNumber: fightNumber});
       that.preEvent(url, event.fight_num);
-    });
+      console.log(event.fight_num, url, that.props.uid,'shit i need');
+      that.getFightPick(event.fight_num, that.props.uid, url);
 
+    });
+  }
+  getFightPick(fight_pos, uid, url) {
+    console.log('getFightPick', fight_pos, uid, url);
+    var myPickRef = Firebase.database().ref('picks/'+uid+'/'+url+'/'+fight_pos);
+    var that = this;
+    myPickRef.on('value', function (snapshot) {
+      var picks = snapshot.val();
+      console.log(picks, 'picks');
+      if (picks === null) {
+        console.log('picks are nullll');
+        that.setState({pickMade: false});
+      }
+      else {
+        console.log('oh shit picks made!!');
+        that.setState({fighter_pick_name: picks.fighter, method_pick_name: picks.method, round_pick_name: picks.round, pickMade: true});
+      }
+    });
   }
   preEvent(event_url, fight_pointer) {
     /*  Get Event details i.e. fighters, date, title, etc. from Firebase and put into state
@@ -97,10 +91,8 @@ class Play extends Component {
     var that = this;
     var events = [];
     ref.once('value', function (snapshot) {
-      //console.log(snapshot.val());
       var event = snapshot.val();
       var first_fight = event.fights[fight_pointer];
-      //console.log(first_fight, fight_pointer, 'first fight');
       var red_fighter = that.nameSplit(first_fight.red);
       var blue_fighter = that.nameSplit(first_fight.blue);
       that.setState({
@@ -128,7 +120,9 @@ class Play extends Component {
     return split;
   }
   render () {
-
+    if (!this.props.uid) {
+      return <div>Loading User Information...</div>
+    }
     //console.log(this.state.event_url, 'play event_url');
     let fight = null;
     let intermission = null;
@@ -141,7 +135,9 @@ class Play extends Component {
     if (fight_status === "INTERMISSION" || user_tally === "false") {
       //INTERMISSION OR USERS TALLY = FALSE
         fight = null;
-        intermission = <Intermission
+        if (this.props.uid && this.state.event_url && this.state.fightNumber) {
+          console.log('reload intermission', this.state.fight_pointer);
+          intermission = <Intermission
                         red_fighter_fullName={this.state.red_fighter_fullName}
                         red_fighter_firstName={this.state.red_fighter_firstName}
                         red_fighter_lastName={this.state.red_fighter_lastName}
@@ -150,9 +146,18 @@ class Play extends Component {
                         blue_fighter_lastName={this.state.blue_fighter_lastName}
                         event_url={this.state.event_url}
                         fight_pointer={this.state.fight_pointer}
+                        total_rounds={this.state.total_rounds}
+                        fight_number={this.state.fightNumber}
+                        uid_props={this.props.uid}
+                        pickMade={this.state.pickMade}
+                        pickFighter={this.state.fighter_pick_name}
+                        pickMethod={this.state.method_pick_name}
+                        pickRound={this.state.round_pick_name}
                       />
-
-
+        }
+        else {
+          intermission = <Spinner />
+        }
     }
 
     if (fight_status === "FIGHTING") {

@@ -10,6 +10,9 @@ class Events extends Component {
     this.state = {
       events : []
     };
+
+  }
+  componentDidMount() {
     this.getEventList();
   }
   getEventList() {
@@ -48,7 +51,7 @@ class Events extends Component {
 
   render() {
 
-    console.log(this.state.events, 'events state');
+    //console.log(this.state.events, 'events state');
     return (
       <div className ="compcontainer">
         <nav className="navbar fixed-top second-navbar center-element drop-shadow2">

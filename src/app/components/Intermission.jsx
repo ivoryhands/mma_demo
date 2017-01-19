@@ -12,6 +12,7 @@ class Intermission extends Component {
     this.handleRound = this.handleRound.bind(this);
     this.handleRedFighter = this.handleRedFighter.bind(this);
     this.handleBlueFighter = this.handleBlueFighter.bind(this);
+
     this.state = {
       event: '',
       current_fight: '',
@@ -43,7 +44,14 @@ class Intermission extends Component {
       event_url : '',
       controller: ''
     };
-    console.log(this.props.fight_pointer, "props fight pointer");
+    console.log('intermission constructor');
+  }
+  componentDidMount() {
+    //this.myPick();
+  }
+  myPick() {
+    //console.log(this.props.uid_props, this.props.event_url, this.props.fight_pointer);
+
   }
   insert (fighter_pick,method_pick,round_pick,uid,event_url, current_fight, fighter_color_pick, fight_pointer) {
     var ref = Firebase.database().ref('mma-live');
@@ -114,8 +122,10 @@ class Intermission extends Component {
                   });
   }
 
-
   render () {
+    if (!this.props.uid) {
+      return <div>Loading Module...</div>
+    }
     const redFighter =  <FighterButton onChange={this.handleRedFighter} fighterClass={this.state.btn_red_fighter_select} name={this.props.red_fighter_fullName} color={this.state.fighter_color_pick}/>;
     const blueFighter =  <FighterButton onChange={this.handleBlueFighter} fighterClass={this.state.btn_blue_fighter_select} name={this.props.blue_fighter_fullName} color={this.state.fighter_color_pick}/>;
     let method = null;
@@ -147,22 +157,24 @@ class Intermission extends Component {
     const round_pick = this.state.round_pick;
     const fighter_pick = this.state.fighter_pick;
 
-    if (round_pick && method_pick && fighter_pick) {
-        this.insert(this.state.fighter_pick_name, this.state.method_pick_name, this.state.round_select, this.props.uid, this.props.event_url, this.state.current_fight, this.state.fighter_color_pick, this.props.fight_pointer);
-
-        if (this.state.disabled_round_btn) {
-          var str = this.state.fighter_pick_name +' via '+ this.state.method_pick_name;
-        }
-        else {
-          var str = this.state.fighter_pick_name +' via '+ this.state.method_pick_name +' in Round '+ this.state.round_select;
-        }
-
-        var finalPick = <FinalPick className={this.state.final_pick_class} fighterPick={this.state.fighter_pick_name} methodPick={this.state.method_pick_name} roundPick={this.state.round_select} str={str}/>
+    if (this.props.pickMade) {
+      if (this.props.pickMethod === "DECISION") {
+        var str = this.props.pickFighter +' via '+ this.props.pickMethod;
+      }
+      else {
+        var str = this.props.pickFighter +' via '+ this.props.pickMethod +' in Round '+ this.props.pickRound;
+      }
     }
+    if (!this.props.pickMade) {
+      var str = 'N/A';
+    }
+
+
+    var finalPick = <FinalPick str={str} />
 
     return (
 
-      <div className ="compcontainer bg-cover">
+      <div className ="compcontainer bg-cover animated fadeIn">
         <nav className="navbar fixed-top second-navbar center-element drop-shadow2">
           <h4><small>{this.state.header_text}</small></h4>
         </nav>
@@ -180,37 +192,57 @@ class Intermission extends Component {
                       <div className="rect5"></div>
                     </div>
                       <h4 className="center-element white-text margin-bot">Waiting for the fight to begin...</h4>
-                    <div className="col-sm-6">
-                      <div className="card blank outline">
-                        <div className="card-block">
-                          <div className="center-element">
-                            <h3 className="card-title no-bot-margin">{this.props.red_fighter_firstName}</h3>
-                            <h1 className="card-title">{this.props.red_fighter_lastName}</h1>
-                          </div>
-                            {redFighter}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-6">
-                      <div className="card blank outline">
-                        <div className="card-block">
-                          <div className="clearfix">
-                            <div className="center-element">
-                              <h3 className="card-title no-bot-margin">{this.props.blue_fighter_firstName}</h3>
-                              <h1 className="card-title">{this.props.blue_fighter_lastName}</h1>
-                            </div>
-                          </div>
-                            {blueFighter}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                        {method}
-                        {finalPick}
                   </div>
                 </div>
                 <div className="col-md-1 col-sm-1"></div>
+            </div>
+            <div className="row">
+              <div className="col-md-1"></div>
+              <div className="col-md-10 card blank outline no-padding-left-right">
+                <div className="fight-title"><h5 className="center-element black-text">FIGHT {this.props.fight_number}</h5></div>
+                <div className="card-block">
+                  <div className="col-md-5"><h1 className="center-element white-text card-title">{this.props.red_fighter_fullName}</h1></div>
+                  <div className="col-md-2">
+                    <h1 className="center-element white-text card-title">VS</h1>
+                  </div>
+                  <div className="col-md-5"><h1 className="center-element white-text card-title">{this.props.blue_fighter_fullName}</h1></div>
+                </div>
+              </div>
+              <div className="col-md-1"></div>
+            </div>
+            <div className="row">
+              <div className="col-md-1"></div>
+              <div className="col-md-10 no-padding-left-right">
+
+                <div className="col-sm-6 no-padding-left">
+                  <div className="card blank outline">
+                    <div className="card blank no-margin-bottom">
+                      <div className="fight-title"><h5 className="center-element black-text">Rounds</h5></div>
+                      <div className="card-block">
+                        <div className="center-element">
+                            <h2 className="playTitle"><small>{this.props.total_rounds}</small></h2>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-sm-6 no-padding-right">
+                  <div className="card blank outline">
+                    <div className="card blank no-margin-bottom">
+                      <div className="fight-title"><h5 className="center-element black-text">Your Pick</h5></div>
+                      <div className="card-block">
+                        <div className="center-element">
+                            {finalPick}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-1"></div>
+
+
             </div>
         </div>
       </div>
@@ -266,20 +298,8 @@ function FighterButton(props) {
 
 function FinalPick(props) {
   return (
-      <div className="col-sm-6">
-        <div className="card blank">
-          <div className="card blank no-margin-bottom">
-            <div className="card-block">
-              <div className="center-element">
-                  <h2 className="playTitle"><small>Your Pick</small></h2>
-                  <h2 className={props.className}>{props.str}</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-  );
+            <h2 className="playTitle"><small>{props.str}</small></h2>
+          );
 }
 function PlaceHolder(props) {
   return (
