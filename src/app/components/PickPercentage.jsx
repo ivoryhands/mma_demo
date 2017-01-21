@@ -51,22 +51,14 @@ class PickPercentage extends Component {
 
     return (
 
-
-
           <div className="margin-auto center-element circle-wrapper" style={circleContainerStyle}>
-
             <Circle
               percent={percent}
               strokeWidth="2"
               strokeLinecap="square"
               strokeColor={this.state.color}
             />
-          <h4>{percent}%</h4>
           </div>
-
-
-
-
 
     );
   }
