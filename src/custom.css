@@ -577,6 +577,22 @@ body {
   background-color: rgba(0,0,0,0.75);
 }
 
+.circle-wrapper {
+  margin-bottom: 2rem;
+}
+.circle-title {
+  padding-bottom: 5rem;
+}
+
+.circle-outer {
+  position:relative;
+  padding-top: 60px;
+}
+.circle-inner {
+  position: absolute;
+  left: 95px;
+  top: 0;
+}
 /**********************************************
 * SPINNER
 **********************************************/
@@ -741,3 +757,7 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/*************************************
+  PERCENTAGE CIRCLE
+*************************************/

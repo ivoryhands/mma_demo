@@ -20,7 +20,7 @@ class Play extends Component {
       eventStartListenerIsLoaded: false,
       fight_pick_name: ''
     };
-    console.log(this.props.uid, 'holla');
+    //console.log(this.props.uid, 'holla');
   }
 
   componentDidMount() {
@@ -28,6 +28,29 @@ class Play extends Component {
     var event_url_split = event_url.split('/');
     this.eventStartListener(event_url_split[0]);
     this.tallyListener(event_url_split[0]);
+  }
+  insertVoteStructure(url, fight_pointer, uid, event_length) {
+
+    var ref = Firebase.database().ref('stats/'+url);
+    ref.once('value', function (snapshot) {
+      var count = 0;
+      snapshot.forEach(function (fights) {
+        var fight = fights.val();
+        console.log(fight, event_length);
+        if (fight.users[uid]) {
+          //console.log('uid yes');
+        }
+        else {
+          //console.log('uid no');
+          var key = uid;
+          var obj = {};
+          obj[key] = "";
+          Firebase.database().ref('stats/' + url + '/' + count + '/' + 'users').set(obj);
+        }
+        count++;
+      });
+    });
+
   }
   tallyListener(url) {
 
@@ -44,7 +67,7 @@ class Play extends Component {
     var eventStatusRef = Firebase.database().ref('controller/events/' + url);
     eventStatusRef.on('value', function(snapshot) {
       var event = snapshot.val();
-      console.log(event, url, 'event snap')
+      //console.log(event, url, 'event snap')
       var controllerObj = {
         event_status: event.event_status,
         fight_status: event.fight_status,
@@ -53,11 +76,11 @@ class Play extends Component {
       };
       //console.log(controllerObj, event.fight_num, 'internal promise');
       const fightNumber = parseInt(event.fight_num) +1;
-      console.log('fightpointer', event.fight_num);
+      //console.log('fightpointer', event.fight_num);
       that.setState({controller: controllerObj, fight_pointer: event.fight_num, event_url: url, fightNumber: fightNumber});
       that.preEvent(url, event.fight_num);
-      console.log(event.fight_num, url, that.props.uid,'shit i need');
-      that.getFightPick(event.fight_num, that.props.uid, url);
+      //console.log(event.fight_num, url, that.props.uid,'shit i need');
+      that.getFightPick(event.fight_num, that.props.uid, url, event.fights);
 
     });
   }
@@ -73,8 +96,8 @@ class Play extends Component {
         that.setState({pickMade: false});
       }
       else {
-        console.log('oh shit picks made!!');
-        that.setState({fighter_pick_name: picks.fighter, method_pick_name: picks.method, round_pick_name: picks.round, pickMade: true});
+        console.log('oh shit picks made!!', picks.winner, picks.method_pick, picks.round_pick);
+        that.setState({fighter_pick_name: picks.winner, method_pick_name: picks.method_pick, round_pick_name: picks.round_pick, pickMade: true});
       }
     });
   }
@@ -109,6 +132,7 @@ class Play extends Component {
         total_rounds: first_fight.total_rounds,
         event_url: event_url
       });
+      that.insertVoteStructure(event_url, fight_pointer, that.props.uid, event.fights.length);
     });
   }
   nameSplit(name) {
@@ -136,7 +160,7 @@ class Play extends Component {
       //INTERMISSION OR USERS TALLY = FALSE
         fight = null;
         if (this.props.uid && this.state.event_url && this.state.fightNumber) {
-          console.log('reload intermission', this.state.fight_pointer);
+          //console.log('reload intermission', this.state.fight_pointer);
           intermission = <Intermission
                         red_fighter_fullName={this.state.red_fighter_fullName}
                         red_fighter_firstName={this.state.red_fighter_firstName}
@@ -164,17 +188,26 @@ class Play extends Component {
       //SET USER TALLY to true
         localStorage.setItem('tally', 'true');
         intermission = null;
-        fight = <Fight
-                        red_fighter_fullName={this.state.red_fighter_fullName}
-                        red_fighter_firstName={this.state.red_fighter_firstName}
-                        red_fighter_lastName={this.state.red_fighter_lastName}
-                        blue_fighter_fullName={this.state.blue_fighter_fullName}
-                        blue_fighter_firstName={this.state.blue_fighter_firstName}
-                        blue_fighter_lastName={this.state.blue_fighter_lastName}
-                        round={this.state.controller.round}
-                        fight_pointer={this.state.fight_pointer}
-                        event_url={this.state.event_url}
-                      />
+        if (this.props.uid && this.state.event_url && this.state.fightNumber) {
+          fight = <Fight
+                    red_fighter_fullName={this.state.red_fighter_fullName}
+                    red_fighter_firstName={this.state.red_fighter_firstName}
+                    red_fighter_lastName={this.state.red_fighter_lastName}
+                    blue_fighter_fullName={this.state.blue_fighter_fullName}
+                    blue_fighter_firstName={this.state.blue_fighter_firstName}
+                    blue_fighter_lastName={this.state.blue_fighter_lastName}
+                    round={this.state.controller.round}
+                    fight_pointer={this.state.fight_pointer}
+                    event_url={this.state.event_url}
+                    pickMade={this.state.pickMade}
+                    pickFighter={this.state.fighter_pick_name}
+                    pickMethod={this.state.method_pick_name}
+                    pickRound={this.state.round_pick_name}
+                  />
+        }
+        else {
+          fight = <Spinner />
+        }
     }
     if (fight_status === "TALLY" && user_tally === "true") {
       intermission = null;

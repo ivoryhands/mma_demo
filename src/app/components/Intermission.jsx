@@ -53,27 +53,7 @@ class Intermission extends Component {
     //console.log(this.props.uid_props, this.props.event_url, this.props.fight_pointer);
 
   }
-  insert (fighter_pick,method_pick,round_pick,uid,event_url, current_fight, fighter_color_pick, fight_pointer) {
-    var ref = Firebase.database().ref('mma-live');
-    var postData={
-      winner: fighter_color_pick,
-      method: method_pick,
-      round: round_pick,
-      fighter: fighter_pick
-    };
 
-    console.log(postData, event_url, 'postData');
-    function writeEventData(postData, fight_pointer, uid, event_url) {
-      var newPostKey = Firebase.database().ref().child('picks').push().key;
-      var updates = {};
-      console.log(newPostKey);
-      console.log(fight_pointer, 'fight pointer!');
-      updates['/picks/'+uid+'/'+event_url+'/'+fight_pointer+'/'] = postData;
-      return Firebase.database().ref().update(updates);
-
-    }
-    writeEventData(postData, fight_pointer, uid, event_url);
-  }
   handleRound(props) {
     this.setState({round_pick: true});
     this.setState({ round_select: props.target.name });
@@ -300,9 +280,4 @@ function FinalPick(props) {
   return (
             <h2 className="playTitle"><small>{props.str}</small></h2>
           );
-}
-function PlaceHolder(props) {
-  return (
-    <h2></h2>
-  );
 }

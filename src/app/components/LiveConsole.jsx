@@ -19,41 +19,43 @@ class LiveConsole extends Component {
 
   }
   componentDidMount() {
-    this.getFightList();
-  }
+    this.fightPickScaffolding();
 
+  }
   getFightList() {
     var picksRef = Firebase.database().ref('picks/'+this.props.uid+'/'+this.props.event_url+'/');
-    var fightsRef = Firebase.database().ref('events/'+this.props.event_url+'/fights/');
-    var fightListArr = [];
+
+    //var pickListArr = [];
     var that = this;
 
     picksRef.on('value', function (snapshot) {
+      //console.log("listen for pick updates....");
       var picks = snapshot.val();
       var pickListArr = [];
+      var fightScaffold = that.state.scaffoldingFightList;
+      var fightListArr = [];
       snapshot.forEach(function (data) {
+        //console.log('data', data.val());
         var pickList = {
-          fighter: data.val().fighter,
-          method: data.val().method,
-          round: data.val().round,
+          fighter: data.val().winner,
+          method: data.val().method_pick,
+          round: data.val().round_pick,
           color: data.val().winner
         };
         pickListArr.push(pickList);
       });
 
-      console.log(pickListArr, 'newfightlistarr');
       that.setState({pickList: pickListArr});
-    });
-    fightsRef.once('value', function (snapshot) {
-      snapshot.forEach(function(data) {
-        var fight = {};
-        for (let x of that.state.pickList) {
-          if (x.fighter === data.val().red || x.fighter === data.val().blue) {
+      //console.log(that.state.scaffoldingFightList, pickListArr, 'sfl');
+      var flag = false;
+      for (let y of that.state.scaffoldingFightList) {
+        for (let x of pickListArr) {
+          if (x.fighter === y.red || x.fighter === y.blue) {
             var flag = true;
             var fight = {
-              blue: data.val().blue,
-              red: data.val().red,
-              total_rounds: data.val().total_rounds,
+              blue: y.blue,
+              red: y.red,
+              total_rounds: y.total_rounds,
               winner: x.fighter,
               round_pick: x.round,
               method_pick: x.method
@@ -65,9 +67,9 @@ class LiveConsole extends Component {
         }
         else {
             var fight = {
-              blue: data.val().blue,
-              red: data.val().red,
-              total_rounds: data.val().total_rounds,
+              blue: y.blue,
+              red: y.red,
+              total_rounds: y.total_rounds,
               winner: '',
               round_pick:'',
               method_pick: ''
@@ -75,17 +77,48 @@ class LiveConsole extends Component {
             fightListArr.push(fight);
         }
         var flag = false;
-      });
+      }
       that.setState({fightList: fightListArr});
+      //console.log(fightListArr, 'fightList pulled');
     });
-    //console.log(fightListArr);
 
 
 
   }
-  insertPicks() {
-    console.log('insertpicks');
+  fightPickScaffolding () {
+    var fightsRef = Firebase.database().ref('events/'+this.props.event_url+'/fights/');
+    var scaffoldingFightList = [];
+    var that = this;
+    fightsRef.once('value', function (snapshot) {
+      snapshot.forEach(function(data) {
+        var fight = {
+          blue: data.val().blue,
+          red: data.val().red,
+          total_rounds: data.val().total_rounds,
+          winner: '',
+          round_pick: '',
+          method_pick: ''
+        };
+        scaffoldingFightList.push(fight);
+      });
+      //console.log(scaffoldingFightList, 'scaffolding');
+      that.setState({
+        scaffoldingFightList: scaffoldingFightList }, () => {
+        that.getFightList();
+      });
+    });
+  }
+  insertPicks (obj, i) {
+    //console.log(obj, i, 'insertPicks entered');
+    var ref = Firebase.database().ref('picks/' + this.props.uid + '/' + this.props.event_url + '/' + i);
 
+    function writeEventData(postData, fight_pointer, uid, event_url) {
+      var updates = {};
+      updates['/picks/'+uid+'/'+event_url+'/'+fight_pointer+'/'] = postData;
+      return Firebase.database().ref().update(updates);
+    }
+
+    writeEventData(obj, i, this.props.uid, this.props.event_url);
   }
   handlePicks(event) {
     if (this.state.picksOpen) {
@@ -114,7 +147,7 @@ class LiveConsole extends Component {
     }
   }
   handleFightPicks(event) {
-    console.log(event.target.value, event.target.name, event.target.id, 'fightpickshandler');
+    //console.log(event.target.value, event.target.name, event.target.id, 'fightpickshandler');
     var a = this.state.fightList;
     var i = parseInt(event.target.id);
 
@@ -147,12 +180,11 @@ class LiveConsole extends Component {
                 red: a[i].red,
                 total_rounds: a[i].total_rounds
               };
-
-
     }
 
     this.setState({fightList: a});
 
+    this.insertPicks(a[i], i);
 
   }
 
@@ -206,7 +238,7 @@ function mapStateToProps (state) {
 export default LiveConsole = connect(mapStateToProps)(LiveConsole);
 
 function Picks(props) {
-  console.log(props, 'picks');
+
   const KNOCKOUT="KNOCKOUT";
   const SUBMISSION="SUBMISSION";
   const DECISION="DECISION";
