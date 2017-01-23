@@ -18,39 +18,36 @@ class SignIn extends Component {
   render() {
     const { handleSubmit } = this.props;
     return (
-      <div>
-        <div className="jumbotron jumbotron-fluid jumbo-short-stack no-bot-margin">
-          <div className="container">
-            <h1 className="display-4">SignIn</h1>
-          </div>
-        </div>
-      <section className="bg-cover">
-      <div className="content no-vert-align">
-      <div className="row">
+      <div className ="compcontainer bg-cover">
+        <nav className="navbar fixed-top second-navbar center-element drop-shadow2 slideRight">
+          <h4><small>Sign In</small></h4>
+        </nav>
+      <div className="row below-second-nav">
 
           <div className="col-md-2 col-sm-1"></div>
           <div className="col-md-8 col-sm-10">
-              <div className="card card-block login">
+            <div className="card blank outline login slideUp">
+              <div className="card-block">
                 <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
                   <div className="form-group">
                     <label htmlFor="email">Email</label>
-                    <Field name="email" className="form-control" component="input" type="text"/>
+                    <Field name="email" className="form-control-black" component="input" type="text"/>
                   </div>
                   <div className="form-group">
                     <label htmlFor="password">Password</label>
-                    <Field name="password" className="form-control" component="input" type="password"/>
+                    <Field name="password" className="form-control-black" component="input" type="password"/>
                   </div>
-                  <button type="submit" className="btn btn-default">Submit</button>
+                  <button type="submit" className="blocks-full">Submit</button>
                 </form>
               </div>
+            </div>
           { this.renderAuthenticationError() }
           </div>
 
           <div className="col-md-2 col-sm-1"></div>
-      </div>
     </div>
-    </section>
     </div>
+
     );
   }
 }

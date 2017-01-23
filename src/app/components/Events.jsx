@@ -3,12 +3,15 @@ import { connect } from 'react-redux';
 import Firebase from 'firebase';
 import { Link } from 'react-router';
 import { currentFightNum } from '../classes/insert.js';
+import LiveGradient from './LiveGradient.jsx';
+import Spinner from './Spinner.jsx';
 
 class Events extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      events : []
+      events : [],
+      eventsIsLoaded: false
     };
 
   }
@@ -39,7 +42,7 @@ class Events extends Component {
               };
               console.log(eventObj, 'eventObj');
               events.push(eventObj);
-              that.setState({events: events})
+              that.setState({events: events, eventsIsLoaded: true})
             });
           }
         );
@@ -50,32 +53,34 @@ class Events extends Component {
   }
 
   render() {
-
-    //console.log(this.state.events, 'events state');
+    if (!this.state.eventsIsLoaded) {
+      return <Spinner />
+    }
     return (
       <div className ="compcontainer">
-        <nav className="navbar fixed-top second-navbar center-element drop-shadow2">
+        <nav className="navbar fixed-top second-navbar center-element drop-shadow2 slideRight">
           <h4><small>Events</small></h4>
         </nav>
         <div className="bg-cover">
           <div className="row below-second-nav">
             <div className="col-md-2 col-sm-1"></div>
             <div className="col-md-8 col-sm-10">
-              <ul className="list-group">
+              <div className="card blank outline login slideUp">
                 {this.state.events.map((item, i) => {
-                    return  <li className="list-group-item" key={i}>
+                    return  <div className="card-block" key={i}>
                               <div className="clearfix">
                                 <div className="float-left">
                                   <Link to ={ 'play/' + item.event_url }><h5>{item.event_title}</h5></Link>
+                                  <h6 className="float:left">{item.date}</h6>
                                 </div>
                                 <div className="float-right">
-                                  <h5 className="live-font">{item.status}</h5>
+                                  <LiveGradient />
                                 </div>
                               </div>
-                                <h6 className="float:left">{item.date}</h6>
-                            </li>
+
+                            </div>
                 })}
-              </ul>
+              </div>
             </div>
             <div className="col-md-2 col-sm-1"></div>
           </div>

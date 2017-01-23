@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import { insert, moduleController } from '../classes/insert.js';
 import LiveConsole from './LiveConsole.jsx';
 import PickPercentage from './PickPercentage.jsx';
+import PlayerConsole from './PlayerConsole.jsx';
 
 class Fight extends Component {
   constructor (props) {
@@ -87,13 +88,11 @@ class Fight extends Component {
         }
         return post;
       });
-
     });
-
-
   }
   render () {
     let liveConsole = null;
+    let playerConsole = null;
     let pickPercentageRed = null;
     let pickPercentageBlue = null;
     const redFighter =  <FighterButton onChange={this.handleRedFighter} fighterClass={this.state.btn_red_fighter_select} name={this.props.red_fighter_fullName} color={this.state.fighter_color_pick}/>;
@@ -115,6 +114,7 @@ class Fight extends Component {
       liveConsole = <LiveConsole
                       uid={this.props.uid}
                       event_url={this.props.event_url}
+                      photos={this.props.photos}
                     />
       let red = "red";
       pickPercentageRed = <PickPercentage
@@ -130,6 +130,14 @@ class Fight extends Component {
                           uid={this.props.uid}
                           color={blue}
         />
+      const status = "FIGHT IN PROGRESS";
+      const controllerTally = false;
+      playerConsole = <PlayerConsole
+                        round={this.props.round}
+                        status={status}
+                        controllerTally={controllerTally}
+                        currentScore={this.props.currentScore}
+        />
     }
 
     return (
@@ -144,8 +152,7 @@ class Fight extends Component {
                 <div className="col-md-10 col-sm-10">
                   {liveConsole}
                   <div className="row">
-
-                      <h4 className="center-element white-text margin-bot">Fight In Progress...</h4>
+                      {playerConsole}
                     <div className="col-sm-6">
                       <div className="card blank outline">
                         <div className="card-block">
@@ -174,11 +181,23 @@ class Fight extends Component {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="center-element">
-                      <h2 className="playTitle">Round {this.props.round}</h2>
-                      <h5 className="playTitle">Your Pick</h5>
-                      <h2 className="playTitle">{str}</h2>
-
+                    <div className="col-md-4">
+                      <div className="card blank outline">
+                        <div className="card-block">
+                          <div className="center-element">
+                            <h4>Round {this.props.round}</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-md-8">
+                      <div className="card blank outline">
+                        <div className="card-block">
+                          <div className="center-element">
+                            <h4>{str}</h4>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

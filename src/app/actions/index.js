@@ -46,24 +46,30 @@ export function signInUser(credentials) {
 
 export function signUpUser(credentials) {
   console.log('signing up!');
+  var user = null;
   return function (dispatch) {
     Firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password)
       .catch(function (error) {
         console.log(error.code, 'error code is:')
       })
       .then(function() {
-        var user = Firebase.auth().currentUser;
-        if (user) {
-          user.updateProfile({
-            photoURL: 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2Fuser-icon.png?alt=media&token=e56eac00-f553-40dd-9252-e2bda3a34f23'
-          });
-        }
+        user = Firebase.auth().currentUser;
+      }).then(function () {
+        user.updateProfile({
+          photoURL: 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2Fuser-icon.png?alt=media&token=e56eac00-f553-40dd-9252-e2bda3a34f23',
+          displayName: credentials.username
+        });
+        Firebase.database().ref('pics/' + user.uid).set({
+           photoURL: 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2Fuser-icon.png?alt=media&token=e56eac00-f553-40dd-9252-e2bda3a34f23',
+           uid: user.uid
+         });
       })
       .then(function() {
           console.log('success!');
           dispatch(initUser());
           dispatch(authUser());
-          browserHistory.push('/profile');
+      }).then(function() {
+          browserHistory.push('/events');
       });
   }
 }
@@ -109,7 +115,7 @@ export function initProfile(user) {
 
 export function initUser() {
   return function (dispatch) {
-    //var user = Firebase.auth().currentUser;
+    var user = Firebase.auth().currentUser;
     if (user) {
       dispatch(initProfile(user));
     }

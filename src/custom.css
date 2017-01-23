@@ -76,6 +76,17 @@ a:active {
 /************************************************
     FONT STUFF
 ************************************************/
+.black-bg {
+  background-color: black;
+}
+
+.black-bg-fade {
+  background-color: rgba(0,0,0,0.5);
+}
+
+.no-outline {
+  outline: 0;
+}
 
 .black-text {
   color: black;
@@ -114,7 +125,25 @@ a:active {
   font-family: 'Open Sans Condensed', sans-serif;
 }
 
+.orange-text {
+  color: #EE543A;
+  font-family: 'Open Sans Condensed', sans-serif;
+}
 
+.orange-bg {
+  background-color: rgba(0,0,0,0.85);
+}
+
+.pick-min{
+  min-height: 255px;
+}
+
+.text-middle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 /************************************************
     HOME PAGE BUTTONS
@@ -141,11 +170,40 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
     padding: 12px 36px 12px 36px;
     margin: 0 5px;
     border-radius: 0;
-    background-color:rgba(0, 0, 0, 0.6);
+    background-color:rgba(255, 255, 255, 1.0);
     border: 1px solid #ffffff;
     cursor:pointer;
     color: white;
     font-family: 'Open Sans Condensed', sans-serif;
+}
+
+.blocks-full {
+  padding: 12px 36px 12px 36px;
+  margin: 0;
+  border-radius: 0;
+  background-color:rgba(255, 255, 255, 1.0);
+  border: 1px solid #000;
+  cursor:pointer;
+  color: black;
+  font-family: 'Open Sans Condensed', sans-serif;
+  display: block;
+  width: 100%;
+}
+
+.blocks-full-selected {
+  padding: 6px 0px 6px 0px;
+  margin: 0px;
+  border-radius: 0;
+  background: none;
+  /*background-color:rgba(0, 0, 0, 0.6);*/
+  border-bottom: 1px solid #ffffff;
+  border: none;
+  outline: none;
+  cursor:pointer;
+  color: #EE543A;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Open Sans Condensed', sans-serif;
 }
 
 .blocks-small {
@@ -222,6 +280,17 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
     transition: all 0.2s ease-in-out;
 }
 
+.blocks-full:focus, .blocks-full:hover, .blocks-full:active, .blocks-full:active, .blocks-full:visited, .blocks-full:target
+{
+    color: white;
+    background-color:#EE543A;
+    border: 1px solid #EE543A;
+    outline: 0;
+    -webkit-box-shadow:  0 0 50px rgba(238,84,58,0.4);
+    box-shadow: 0 0 50px rgba(238,84,58,0.4);
+    transition: all 0.2s ease-in-out;
+}
+
 .blocks-round:focus, .blocks-round:hover, .blocks-round:active, .blocks-round:active, .blocks-round:visited, .blocks-round:target
 {
     color: white;
@@ -239,11 +308,86 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
   border: 1px solid #EE543A;
   outline: 0;
   color: rgba(255, 255, 255, 1);
-
 }
 
 .glow-button:hover {
 
+}
+/************************************************
+    LEADERBOARD
+************************************************/
+.lb-rank {
+  float: left;
+  margin-right: 1rem;
+  margin-left: 1rem;
+}
+.lb-rank h3 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.lb-pic {
+  float: left;
+  width: 50px;
+  height: 50px;
+  background-size: 40px;
+  background-repeat: no-repeat;
+  margin-right: 1rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 5px;
+  background-position: center;
+}
+.lb-name {
+  float: left;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.lb-score {
+  float: right;
+  padding-right: 1rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.lb-row {
+  background-color: white;
+  color: black;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+/************************************************
+    HOW TO PLAY
+************************************************/
+.howtoplay {
+
+}
+
+.howtoplay span {
+  color: #EE543A;
+  font-weight: bold;
+}
+
+/************************************************
+    FORM INPUT STYLING
+************************************************/
+.form-control-black {
+  padding: 10px;
+  border: none;
+  border-bottom: solid 2px #ffffff;
+  border-radius: 0;
+  background-color: rgba(0,0,0,0);
+  transition: border 0.3s;
+  color: white;
+  width: 100%;
+  outline: 0;
+}
+
+.form-control-black:focus {
+  border-bottom: solid 2px #969696;
+  background-color: rgba(0,0,0,0);
+  color: white;
+  width: 100%;
+  outline: 0;
 }
 
 /************************************************
@@ -469,7 +613,7 @@ section {
   height: 20px;
     margin-bottom: 20px;
     overflow: hidden;
-    background-color: #f5f5f5;
+    background-color: none;
     border-radius: 4px;
 }
 
@@ -482,7 +626,7 @@ section {
     line-height: 20px;
     color: #fff;
     text-align: center;
-    background-color: #337ab7;
+    background-color: #EE543A;
 }
 
 .user-greet {
@@ -759,5 +903,19 @@ body {
 }
 
 /*************************************
-  PERCENTAGE CIRCLE
+  PLAYERCONSOLE
 *************************************/
+.player-console-profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  background: #eee no-repeat center;
+  background-size: cover;
+  float:left;
+}
+.profile-name {
+
+}
+#profile-pic {
+
+}

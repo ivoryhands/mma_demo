@@ -47,6 +47,7 @@ class Intermission extends Component {
     console.log('intermission constructor');
   }
   componentDidMount() {
+    console.log(this.props, 'INTERMISSION PROPS');
     //this.myPick();
   }
   myPick() {
@@ -130,6 +131,7 @@ class Intermission extends Component {
       liveConsole = <LiveConsole
                       uid={this.props.uid}
                       event_url={this.props.event_url}
+                      photos={this.props.photos}
                     />
     }
 

@@ -8,8 +8,8 @@ function Home() {
       <div className="content">
         <h1>MMA CLASH</h1>
         <p>Clash against other fight fans as you make fight picks in realtime and compete for top spot.</p>
-        <Link to ="signin" className="btn btn-outline-secondary btn-lg" role="button">Sign In</Link>
-        <Link to ="signup" className="btn btn-outline-secondary btn-signin btn-lg" role="button">Sign Up</Link>
+        <Link to ="signin" className="blocks" role="button">Sign In</Link>
+        <Link to ="signup" className="blocks" role="button">Sign Up</Link>
 
      </div>
     </section>
