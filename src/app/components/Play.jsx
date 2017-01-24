@@ -6,6 +6,7 @@ import Intermission from './Intermission.jsx';
 import Fight from './Fight.jsx';
 import Tally from './Tally.jsx';
 import Spinner from './Spinner.jsx';
+import PreEvent from './preEvent.jsx';
 
 
 class Play extends Component {
@@ -21,7 +22,6 @@ class Play extends Component {
       fight_pick_name: '',
       currentScore: 0
     };
-    //console.log(this.props.uid, 'holla');
   }
 
   componentDidMount() {
@@ -184,14 +184,19 @@ class Play extends Component {
     let fight = null;
     let intermission = null;
     let tally = null;
+    let preEvent = null;
+    let postEvent = null;
 
     let user_tally = localStorage.getItem('tally');
     const fight_status = this.state.controller.fight_status;
-    //console.log(fight_status, 'fightstatus');
+    const event_status = this.state.controller.event_status;
+
+    console.log(this.state.controller.event_status, event_status, 'event status');
 
     if (fight_status === "INTERMISSION" || user_tally === "false") {
       //INTERMISSION OR USERS TALLY = FALSE
         fight = null;
+        //preEvent = null;
         if (this.props.uid && this.state.event_url && this.state.fightNumber && this.state.photos) {
           //console.log('reload intermission', this.state.fight_pointer);
           intermission = <Intermission
@@ -225,6 +230,8 @@ class Play extends Component {
       //SET USER TALLY to true
         localStorage.setItem('tally', 'true');
         intermission = null;
+        //preEvent = null;
+
         if (this.props.uid && this.state.event_url && this.state.fightNumber && this.state.photos) {
           fight = <Fight
                     red_fighter_fullName={this.state.red_fighter_fullName}
@@ -253,6 +260,8 @@ class Play extends Component {
     if (fight_status === "TALLY" && user_tally === "true") {
       intermission = null;
       fight = null;
+      //preEvent = null;
+
       tally = <Tally  red_fighter_fullName={this.state.red_fighter_fullName}
                       red_fighter_firstName={this.state.red_fighter_firstName}
                       red_fighter_lastName={this.state.red_fighter_lastName}
@@ -272,10 +281,29 @@ class Play extends Component {
                       photos={this.state.photos}
               />
     }
+    if (event_status === "PRE" && fight_status === "PRE") {
+
+      intermission = null;
+      fight = null;
+      tally=null;
+      
+      if (this.props.uid && this.state.event_url && this.state.fightNumber && this.state.photos) {
+
+        preEvent =    <PreEvent
+                        photos={this.state.photos}
+                        event_url={this.state.event_url}
+                      />
+      }
+      else {
+        preEvent = <Spinner />
+      }
+
+    }
 
 
     return (
         <div>
+          {preEvent}
           {intermission}
           {fight}
           {tally}

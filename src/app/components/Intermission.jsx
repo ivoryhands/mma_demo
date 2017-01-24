@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import Firebase from 'firebase';
 import { Link } from 'react-router';
 import LiveConsole from './LiveConsole.jsx';
-//import { insert, moduleController } from '../classes/insert.js'
 
 class Intermission extends Component {
   constructor (props) {
