@@ -361,6 +361,9 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
 .authorize {
   border-radius: 0;
   margin-top: 1rem;
+  color: white;
+  background-color: #EE543A;
+  border: 0;
 }
 
 

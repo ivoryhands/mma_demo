@@ -12,21 +12,16 @@ class SignUp extends Component {
   }
   componentDidMount() {
     if (this.props.authenticationError) {
-      this.setState({error: true});
+      this.setState({error: false});
     }
     else {
-      this.setState({error: false});
+      this.setState({error: true});
     }
   }
   handleFormSubmit(formValues){
     console.log(formValues);
+    this.setState({error: true});
     this.props.signUpUser(formValues);
-  }
-  renderAuthenticationError() {
-    //if (this.state.error) {
-    //  return <div className="alert alert-danger authorize">{ this.props.authenticationError }</div>;
-    //}
-    //return <div></div>;
   }
 
   render() {
@@ -71,7 +66,6 @@ class SignUp extends Component {
               </div>
             </div>
           </div>
-
           <div className="col-md-2 col-sm-1"></div>
     </div>
     </div>
@@ -85,9 +79,8 @@ function mapStateToProps(state) {
   }
 }
 
-// Decorate the form component
 SignUp = reduxForm({
-  form: 'register' // a unique name for this form
+  form: 'register'
 })(SignUp);
 export default SignUp = connect(mapStateToProps, Actions)(SignUp);
 

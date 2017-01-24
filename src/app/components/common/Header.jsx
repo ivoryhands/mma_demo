@@ -31,9 +31,9 @@ class Header extends Component {
                   Admin
                   </a>
                   <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <Link to ="admin/addEvent" className="dropdown-item">Add Event</Link>
-                    <Link to ="editData" className="dropdown-item">Edit Data</Link>
-                    <Link to ="editPrefs" className="dropdown-item">Edit Preferences</Link>
+                    <Link to ="/admin/addEvent" className="dropdown-item">Add Event</Link>
+                    <Link to ="/editData" className="dropdown-item">Edit Data</Link>
+                    <Link to ="/editPrefs" className="dropdown-item">Edit Preferences</Link>
                   </div>
               </li>
     }
@@ -48,7 +48,7 @@ class Header extends Component {
             <ul className="nav navbar-nav float-xs-right">
                 {this.adminMenu()}
                 <li className="nav-item">
-                    <Link to="profile" className="nav-link">Profile</Link>
+                    <Link to="/profile" className="nav-link">Profile</Link>
                 </li>
                 <li className="nav-item">
                     <a href="#" className="nav-link" onClick={() => this.handleSignout()}>Sign Out</a>
@@ -60,10 +60,10 @@ class Header extends Component {
     else {
       return <ul className="nav navbar-nav float-xs-right">
                 <li className="nav-item">
-                    <Link to="signin" className="nav-link">Sign In</Link>
+                    <Link to="/signin" className="nav-link">Sign In</Link>
                 </li>
                 <li className="nav-item">
-                    <Link to="signup" className="nav-link">Sign Up</Link>
+                    <Link to="/signup" className="nav-link">Sign Up</Link>
                 </li>
             </ul>
     }
@@ -71,13 +71,13 @@ class Header extends Component {
   render () {
     return (
       <nav className="navbar fixed-top navbar-light bg-faded .zindex-topnav nav-bar-first">
-        <Link to="/" className="navbar-brand">MMA Clash</Link>
+        <Link to="/" className="navbar-brand">ClashMMA</Link>
         <ul className="nav navbar-nav">
           <li className="nav-item">
             <Link to="/" className="nav-link">Home</Link>
           </li>
           <li className="nav-item">
-            <Link to="events" className="nav-link">Events</Link>
+            <Link to="/events" className="nav-link">Events</Link>
           </li>
         </ul>
             {this.renderAuthLink()}
