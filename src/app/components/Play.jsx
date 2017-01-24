@@ -29,8 +29,17 @@ class Play extends Component {
     var event_url_split = event_url.split('/');
     this.eventStartListener(event_url_split[0]);
     this.tallyListener(event_url_split[0]);
-    this.currentScore(event_url_split[0]);
+    this.insertScoreStructure(event_url_split[0]);
     this.getPhotos(event_url_split[0]);
+  }
+  insertScoreStructure(url) {
+    var d = new Date();
+    var n = d.toString();
+    var obj = {
+      modifiedAt: n
+    };
+    Firebase.database().ref('users/' + this.props.uid + '/' + url).set(obj);
+    this.currentScore(url);
   }
   currentScore(url) {
     var that = this;
@@ -43,7 +52,6 @@ class Play extends Component {
     });
   }
   insertVoteStructure(url, fight_pointer, uid, event_length) {
-
     var ref = Firebase.database().ref('stats/'+url);
     ref.once('value', function (snapshot) {
       var count = 0;
@@ -60,7 +68,6 @@ class Play extends Component {
         count++;
       });
     });
-
   }
   tallyListener(url) {
 

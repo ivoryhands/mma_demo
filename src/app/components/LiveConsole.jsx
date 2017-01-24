@@ -24,7 +24,6 @@ class LiveConsole extends Component {
 
   }
   leaderboardConsole() {
-    //console.log(this.props, "LIVE CONSOLE PROPS!");
     var usersRef = Firebase.database().ref('leaderboard/' + this.props.event_url);
     var that = this;
 
@@ -72,7 +71,6 @@ class LiveConsole extends Component {
     var that = this;
 
     picksRef.on('value', function (snapshot) {
-      console.log("listen for pick updates....");
       var picks = snapshot.val();
       var pickListArr = [];
       var fightScaffold = that.state.scaffoldingFightList;
@@ -122,7 +120,6 @@ class LiveConsole extends Component {
         var flag = false;
       }
       that.setState({fightList: fightListArr});
-      console.log(fightListArr, 'fightList pulled');
     });
 
   }
@@ -141,10 +138,8 @@ class LiveConsole extends Component {
           method_pick: '',
           open: data.val().open
         };
-        //console.log(data.val(), 'scaffolding data');
         scaffoldingFightList.push(fight);
       });
-      //console.log(scaffoldingFightList, 'scaffolding');
       that.setState({
         scaffoldingFightList: scaffoldingFightList }, () => {
         that.getFightList();
@@ -374,7 +369,7 @@ function Picks(props) {
 function Leaderboard(props) {
   var that = this;
   console.log(props, 'leaderboard props');
-  
+
   return (
         <div className="card blank outline">
           <div className="card-block">

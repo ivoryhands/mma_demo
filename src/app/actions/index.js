@@ -39,7 +39,7 @@ export function signInUser(credentials) {
         browserHistory.push('/events');
       })
       .catch (error=> {
-        dispatch(authError(error));
+        dispatch(authError(error.code));
       });
   }
 }
@@ -49,9 +49,6 @@ export function signUpUser(credentials) {
   var user = null;
   return function (dispatch) {
     Firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password)
-      .catch(function (error) {
-        console.log(error.code, 'error code is:')
-      })
       .then(function() {
         user = Firebase.auth().currentUser;
       }).then(function () {
@@ -62,7 +59,15 @@ export function signUpUser(credentials) {
         Firebase.database().ref('pics/' + user.uid).set({
            photoURL: 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2Fuser-icon.png?alt=media&token=e56eac00-f553-40dd-9252-e2bda3a34f23',
            uid: user.uid
-         });
+        });
+        var d = new Date();
+        var n = d.toString();
+        console.log('signUpUser', user.uid, credentials.username, n);
+        Firebase.database().ref('users/' + user.uid).set({
+           createdAt: n,
+           displayName: credentials.username,
+           uid: user.uid
+        });
       })
       .then(function() {
           console.log('success!');
@@ -70,6 +75,10 @@ export function signUpUser(credentials) {
           dispatch(authUser());
       }).then(function() {
           browserHistory.push('/events');
+      })
+      .catch(function (error) {
+        console.log(error.code, 'error code is:')
+        dispatch(authError(error.code));
       });
   }
 }
@@ -158,6 +167,6 @@ export function verifyAuth() {
 export function authError(error) {
   return {
     type: AUTH_ERROR,
-    payload: 'Invalid login attempt.  Please try again.'
+    payload: error
   }
 }

@@ -10,7 +10,7 @@ class SignIn extends Component {
   }
   renderAuthenticationError() {
     if (this.props.authenticationError) {
-      return <div className="alert alert-danger">{ this.props.authenticationError }</div>;
+      return <div className="alert alert-danger authorize">{ this.props.authenticationError }</div>;
     }
     return <div></div>;
   }
@@ -39,9 +39,10 @@ class SignIn extends Component {
                   </div>
                   <button type="submit" className="blocks-full">Submit</button>
                 </form>
+                { this.renderAuthenticationError() }
               </div>
             </div>
-          { this.renderAuthenticationError() }
+
           </div>
 
           <div className="col-md-2 col-sm-1"></div>

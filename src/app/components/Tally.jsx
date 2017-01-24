@@ -18,7 +18,6 @@ class Tally extends Component {
       redWinner: false,
       colorWinner: ""
     };
-
   }
   componentDidMount() {
     this.getPick();
@@ -57,17 +56,11 @@ class Tally extends Component {
             displayName: that.props.displayName
           });
           that.setState({total_score: score + currentScore, fight_score: score});
-
-          //var key = that.props.displayName;
           var obj = {displayName: that.props.displayName, uid: that.props.uid, score: score+currentScore};
-          //obj[key] = score + currentScore;
           Firebase.database().ref('leaderboard/'+url+'/'+that.props.uid).set(obj);
-
-
         }
       writeUserData(score, that.props.currentScore);
     });
-
   }
   handleProceed() {
     localStorage.setItem('tally', 'false');

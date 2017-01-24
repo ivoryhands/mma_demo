@@ -356,6 +356,15 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
 }
 
 /************************************************
+    AUTHORIZATION
+************************************************/
+.authorize {
+  border-radius: 0;
+  margin-top: 1rem;
+}
+
+
+/************************************************
     HOW TO PLAY
 ************************************************/
 .howtoplay {
