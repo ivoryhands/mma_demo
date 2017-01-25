@@ -15,6 +15,7 @@ import Events from './components/Events';
 import addEvent from './components/admin/addEvent';
 import SignUp from './components/users/SignUp';
 import RequireAuth from './components/RequireAuth'
+import NotFound from './components/NotFound';
 import * as Actions from './actions';
 
 import reducers from './reducers';
@@ -41,9 +42,10 @@ class Routes extends Component {
           <Route path="/signin" component={SignIn} />
           <Route path="/signup" component={SignUp} />
           <Route path="/events" component={RequireAuth(Events)} />
-          <Route path="/profile" component={Profile} />
+          <Route path="/profile" component={RequireAuth(Profile)} />
           <Route path="/play/*" component={RequireAuth(Play)} />
           <Route path="/admin/addEvent" component={addEvent} />
+          <Route path="*" component={NotFound} />
         </Route>
       </Router>
     );

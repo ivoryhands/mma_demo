@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Firebase from 'firebase';
 import { Link } from 'react-router';
-import { currentFightNum } from '../classes/insert.js';
 import LiveGradient from './LiveGradient.jsx';
 import Spinner from './Spinner.jsx';
 
@@ -17,6 +16,7 @@ class Events extends Component {
   }
   componentDidMount() {
     this.getEventList();
+    console.log('mounted!');
   }
   getEventList() {
     /***********************************
@@ -40,6 +40,7 @@ class Events extends Component {
         events.sort(function(a,b){
           return  new Date(b.date) - new Date(a.date);
         });
+        console.log('event loaded....');
         that.setState({events: events, eventsIsLoaded: true});
       });
     });

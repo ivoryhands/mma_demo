@@ -84,8 +84,6 @@ class preEvent extends Component {
                     </div>
                   </div>
                 </div>
-
-
               </div>
               <div className="col-md-1"></div>
             </div>
@@ -93,7 +91,7 @@ class preEvent extends Component {
               <div className="col-md-1"></div>
               <div className="col-md-10 no-padding-left-right">
                 <div className="info">
-                  <h4 className="center-element white-text margin-bot">Make your picks before the event begins by clicking on the <span>My Picks</span> tab</h4>
+                  <h4 className="center-element white-text margin-bot">Make your picks before the event by clicking on the <span>My Picks</span> tab</h4>
                 </div>
               </div>
               <div className="col-md-1"></div>

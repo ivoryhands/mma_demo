@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Firebase from 'firebase';
 import { Link } from 'react-router';
-import { insert, moduleController } from '../classes/insert.js';
 import LiveConsole from './LiveConsole.jsx';
 import PickPercentage from './PickPercentage.jsx';
 import PlayerConsole from './PlayerConsole.jsx';

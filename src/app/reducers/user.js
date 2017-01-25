@@ -10,11 +10,11 @@ const initialState =  {
 };
 
 export default function (state = initialState, action) {
-  //console.log(action, "action user");
+
   switch (action.type) {
     case USER_UPDATE:
       return {
-        ...state, photoURL: action.payload.photoURL, displayName: action.payload.displayName, uid: action.payload.uid
+        ...state, photoURL: action.payload.photoURL
       };
     case USER_INIT:
       return {

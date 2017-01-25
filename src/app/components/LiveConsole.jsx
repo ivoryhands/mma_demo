@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Firebase from 'firebase';
 import { Link, browserHistory } from 'react-router';
-import { insert, moduleController } from '../classes/insert.js'
 
 class LiveConsole extends Component {
   constructor (props) {

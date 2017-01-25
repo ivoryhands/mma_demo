@@ -23,9 +23,9 @@ export default function(WrappedComponent) {
     }
 
     render() {
-      if (!this.props.uid) {
-        return <div>Loading...</div>
-      }
+      //if (!this.props.uid) {
+      //  return <div>Loading...</div>
+      //}
       return <WrappedComponent {...this.props}/>
     }
   }

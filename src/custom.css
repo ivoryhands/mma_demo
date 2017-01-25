@@ -379,6 +379,13 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
   font-weight: bold;
 }
 
+.404 {
+
+}
+.404 > img {
+  width: 300px;
+}
+
 /************************************************
     COUNTDOWN CLOCK
 ************************************************/
@@ -396,15 +403,13 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
 #clockdiv > div{
 	padding: 10px;
 	border-radius: 0px;
-	/*background: #00BF96;*/
 	display: inline-block;
-
 }
 
 #clockdiv div > span{
 	padding: 15px;
 	border-radius: 0px;
-	background: #000;
+	background: rgba(0,0,0,0.85);
 	display: inline-block;
 }
 

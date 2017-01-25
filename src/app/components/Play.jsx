@@ -7,6 +7,7 @@ import Fight from './Fight.jsx';
 import Tally from './Tally.jsx';
 import Spinner from './Spinner.jsx';
 import PreEvent from './preEvent.jsx';
+import PostEvent from './postEvent.jsx';
 
 
 class Play extends Component {
@@ -196,6 +197,7 @@ class Play extends Component {
     if (fight_status === "INTERMISSION" || user_tally === "false") {
       //INTERMISSION OR USERS TALLY = FALSE
         fight = null;
+        //postEvent = null;
         //preEvent = null;
         if (this.props.uid && this.state.event_url && this.state.fightNumber && this.state.photos) {
           //console.log('reload intermission', this.state.fight_pointer);
@@ -231,6 +233,7 @@ class Play extends Component {
         localStorage.setItem('tally', 'true');
         intermission = null;
         //preEvent = null;
+        //postEvent = null;
 
         if (this.props.uid && this.state.event_url && this.state.fightNumber && this.state.photos) {
           fight = <Fight
@@ -260,7 +263,8 @@ class Play extends Component {
     if (fight_status === "TALLY" && user_tally === "true") {
       intermission = null;
       fight = null;
-      //preEvent = null;
+      //postEvent = null;
+      preEvent = null;
 
       tally = <Tally  red_fighter_fullName={this.state.red_fighter_fullName}
                       red_fighter_firstName={this.state.red_fighter_firstName}
@@ -285,8 +289,9 @@ class Play extends Component {
 
       intermission = null;
       fight = null;
-      tally=null;
-      
+      tally = null;
+      //postEvent = null;
+
       if (this.props.uid && this.state.event_url && this.state.fightNumber && this.state.photos) {
 
         preEvent =    <PreEvent
@@ -300,9 +305,30 @@ class Play extends Component {
 
     }
 
+    if (event_status === "POST" && fight_status === "POST") {
+
+      intermission = null;
+      fight = null;
+      tally = null;
+      preEvent = null;
+
+      if (this.props.uid && this.state.event_url && this.state.fightNumber && this.state.photos) {
+
+        postEvent =    <PostEvent
+                        photos={this.state.photos}
+                        event_url={this.state.event_url}
+                      />
+      }
+      else {
+        postEvent = <Spinner />
+      }
+
+    }
+
 
     return (
         <div>
+          {postEvent}
           {preEvent}
           {intermission}
           {fight}

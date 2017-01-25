@@ -62,7 +62,7 @@ class Profile extends Component {
 
   render() {
     const { handleSubmit } = this.props;
-    console.log(this.photoURL, 'profile state');
+    //console.log(this.photoURL, 'profile state');
 
     return (
       <div className ="compcontainer bg-cover">
