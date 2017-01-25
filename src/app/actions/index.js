@@ -26,7 +26,7 @@ export function updateProfile(forminput) {
       var user = Firebase.auth().currentUser;
       //console.log(user.displayName, "post");
       dispatch(userUpdate(user.displayName, user.photoURL));
-      browserHistory.push('/');
+      browserHistory.push('/profile');
   }
 }
 

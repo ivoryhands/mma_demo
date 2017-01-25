@@ -18,7 +18,7 @@ class NotFound extends Component {
           <div className="row below-second-nav">
             <div className="col-md-2 col-sm-1"></div>
             <div className="col-md-8 col-sm-10">
-              <div className="404">
+              <div className="404 center-element">
                 <img src="../src/images/404.jpg" style={{width: "300px"}}/>
                 <h1 className="white-text">404 Error.</h1>
                 <h3 className="white-text">The page you requested could not be found.</h3>

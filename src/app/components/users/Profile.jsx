@@ -8,10 +8,30 @@ import Spinner from '../Spinner.jsx';
 class Profile extends Component {
   constructor(props) {
         super(props);
-        this.state = { progressBar: "0%"};
+        this.state = {
+          progressBar: "0%",
+          imageLoaded: false
+        };
+
   }
   componentDidMount() {
-    //this.getProfile();
+
+  }
+  handleImageLoaded() {
+    console.log('imageloaded true!');
+    this.setState({imageLoaded: true});
+  }
+  renderSpinner() {
+    if (!this.state.imageLoaded) {
+      return <div className="spinnerDots">
+                <div className="double-bounce1"></div>
+                <div className="double-bounce2"></div>
+              </div>
+    }
+    else {
+      return null;
+    }
+
   }
   getProfile() {
     var that = this;
@@ -19,7 +39,9 @@ class Profile extends Component {
     console.log(user, 'user is logged in.....');
     return <div className="profile-top">
               <div className="profile-image-parent">
-                <img src={user.photoURL}/>
+                  {this.renderSpinner()}
+                  <img src={user.photoURL} onLoad={this.handleImageLoaded.bind(this)}/>
+                }
               </div>
               <h3 className="white-text">{user.email}</h3>
               <h2 className="white-text">{user.displayName}</h2>
@@ -103,9 +125,7 @@ function mapStateToProps (state) {
   }
 }
 
-
-// Decorate the form component
 Profile = reduxForm({
-  form: 'profile' // a unique name for this form
+  form: 'profile'
 })(Profile);
 export default Profile = connect(mapStateToProps, Actions)(Profile);

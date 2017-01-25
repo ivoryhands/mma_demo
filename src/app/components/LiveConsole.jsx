@@ -7,13 +7,15 @@ class LiveConsole extends Component {
   constructor (props) {
     super(props);
     this.handleFightPicks = this.handleFightPicks.bind(this);
+    this.handleAutoPick = this.handleAutoPick.bind(this);
     this.state = {
       picksOpen: false,
       leaderboardOpen: false,
       scoresOpen: false,
       fightList: [],
       rounds_three: ['1', '2', '3'],
-      rounds_five: ['1', '2', '3', '4', '5']
+      rounds_five: ['1', '2', '3', '4', '5'],
+      autoPickActivated: false
     };
 
   }
@@ -128,6 +130,11 @@ class LiveConsole extends Component {
     var that = this;
     fightsRef.once('value', function (snapshot) {
       snapshot.forEach(function(data) {
+        var key = data.val().key;
+        var key_split = key.split("-");
+        var last_key_split = key_split[key_split.length-1];
+        var fightKey = last_key_split;
+        console.log(fightKey, 'this is fighter Key');
         var fight = {
           blue: data.val().blue,
           red: data.val().red,
@@ -135,7 +142,8 @@ class LiveConsole extends Component {
           winner: '',
           round_pick: '',
           method_pick: '',
-          open: data.val().open
+          open: data.val().open,
+          key: fightKey
         };
         scaffoldingFightList.push(fight);
       });
@@ -224,9 +232,54 @@ class LiveConsole extends Component {
     this.insertPicks(a[i], i);
 
   }
+  handleAutoPick(event) {
+    console.log('autopick', this.state.fightList);
+    this.setState({autoPickActivated: true});
+    var that = this;
+    setTimeout(function () {
+      that.setState({autoPickActivated: false});
+    }, 3000);
+
+    var allFights = this.state.scaffoldingFightList;
+    var autoPickFights = [];
+    for (let x of allFights) {
+      var total_rounds = x.total_rounds;
+      var methods = ['KNOCKOUT', 'SUBMISSION', 'DECISION'];
+      var redFighter = x.red;
+      var blueFighter = x.blue;
+      var fightKey = x.key;
+      var fighters = [redFighter, blueFighter];
+      if (total_rounds === "3") {
+        var rounds = ["1", "2", "3"];
+      }
+      if (total_rounds === "5") {
+        var rounds = ["1", "2", "3", "4", "5"];
+      }
+      var randomMethod = methods[Math.floor(Math.random()*methods.length)];
+      var randomFighter = fighters[Math.floor(Math.random()*fighters.length)];
+      var randomRound = rounds[Math.floor(Math.random()*rounds.length)];
+      var resultObj = {
+        winner: randomFighter,
+        blue: blueFighter,
+        method_pick: randomMethod,
+        round_pick: randomRound,
+        red: redFighter,
+        total_rounds: total_rounds
+      };
+      console.log(resultObj, fightKey);
+      autoPickFights.push(resultObj);
+    }
+    console.log(autoPickFights, this.props.uid, this.props.event_url);
+    var postData = {
+      fights: autoPickFights,
+    };
+    var updates = {};
+    updates['picks/'+this.props.uid+'/'+this.props.event_url] = autoPickFights;
+    return Firebase.database().ref().update(updates);
+
+  }
 
   render () {
-    //console.log(this.state.allScores, 'this all allscores');
     let picks = null;
     let leaderboard = null;
     let howtoplay = null;
@@ -234,6 +287,8 @@ class LiveConsole extends Component {
       picks = <Picks
                   fightList={this.state.fightList}
                   onChangeFighter={this.handleFightPicks}
+                  onChangeAutoPick={this.handleAutoPick}
+                  autoPickActivated={this.state.autoPickActivated}
               />
       leaderboard = null
       howtoplay = null
@@ -296,11 +351,12 @@ function Picks(props) {
   const DECISION="DECISION";
   return (
         <div className="card blank  bg-50">
-
             <div className="center-element fightList">
-              <ul>
+              <div className="auto-pick">
+                <button className="blocks-auto-pick" disabled={props.autoPickActivated} onClick={props.onChangeAutoPick}>AUTOPICK</button>
+              </div>
+            <ul>
                 {props.fightList.map((item, i) => {
-                  console.log(item.open, 'item status??');
                   if (item.open) {
                     return  <div className="col-md-6 margin-bot pick-min" key={i}>
                                 <div className="card-block outline">
@@ -341,8 +397,8 @@ function Picks(props) {
                                                 <option value="1">ROUND 1</option>
                                                 <option value="2">ROUND 2</option>
                                                 <option value="3">ROUND 3</option>
-                                                <option value="3">ROUND 4</option>
-                                                <option value="3">ROUND 5</option>
+                                                <option value="4">ROUND 4</option>
+                                                <option value="5">ROUND 5</option>
                                             </select>}
                                         </div>
                                       </div>
