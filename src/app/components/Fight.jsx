@@ -23,7 +23,7 @@ class Fight extends Component {
   getPick() {
     var that = this;
     console.log(this.props.uid, this.props.fight_pointer, this.props.event_url, 'props');
-    return Firebase.database().ref('/picks/' + this.props.uid+'/'+this.props.event_url+'/'+this.props.fight_pointer).once('value').then(function(snapshot) {
+    return Firebase.database().ref('/picks/' + this.props.event_url+'/'+this.props.uid+'/'+this.props.fight_pointer).once('value').then(function(snapshot) {
       console.log(snapshot.val(), 'snappers');
       var picks = snapshot.val();
       if (picks.winner === picks.blue) {
@@ -114,6 +114,8 @@ class Fight extends Component {
                       uid={this.props.uid}
                       event_url={this.props.event_url}
                       photos={this.props.photos}
+                      event_status={this.props.event_status}
+                      fight_status={this.props.fight_status}
                     />
       let red = "red";
       pickPercentageRed = <PickPercentage
@@ -136,6 +138,7 @@ class Fight extends Component {
                         status={status}
                         controllerTally={controllerTally}
                         currentScore={this.props.currentScore}
+
         />
     }
 
@@ -180,17 +183,10 @@ class Fight extends Component {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-md-4">
+
+                    <div className="col-md-12">
                       <div className="card blank outline">
-                        <div className="card-block">
-                          <div className="center-element">
-                            <h4>Round {this.props.round}</h4>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-md-8">
-                      <div className="card blank outline">
+                        <div className="fight-title"><h5 className="center-element black-text">Your Pick</h5></div>
                         <div className="card-block">
                           <div className="center-element">
                             <h4>{str}</h4>
@@ -198,6 +194,18 @@ class Fight extends Component {
                         </div>
                       </div>
                     </div>
+
+                    <div className="col-md-12">
+                      <div className="card blank outline">
+                        <div className="fight-title"><h5 className="center-element black-text">Round</h5></div>
+                        <div className="card-block">
+                          <div className="center-element">
+                            <h4>{this.props.round}</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
                 <div className="col-md-1 col-sm-1"></div>

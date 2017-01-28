@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Firebase from 'firebase';
 import { Link } from 'react-router';
 import LiveConsole from './LiveConsole.jsx';
+import PlayerConsole from './PlayerConsole.jsx';
 
 class Intermission extends Component {
   constructor (props) {
@@ -111,6 +112,7 @@ class Intermission extends Component {
     let method = null;
     let round = null;
     let liveConsole = null;
+    let playerConsole = null;
     const method_pick = this.state.fighter_pick;
 
     if (method_pick) {
@@ -131,7 +133,19 @@ class Intermission extends Component {
                       uid={this.props.uid}
                       event_url={this.props.event_url}
                       photos={this.props.photos}
+                      event_status={this.props.event_status}
+                      fight_status={this.props.fight_status}
                     />
+
+      const status = "INTERMISSION";
+      const controllerTally = false;
+      playerConsole = <PlayerConsole
+                        round={this.props.round}
+                        status={status}
+                        fight_score={this.state.fight_score}
+                        controllerTally={controllerTally}
+                        currentScore={this.props.currentScore}
+                      />
     }
 
 
@@ -164,38 +178,60 @@ class Intermission extends Component {
                 <div className="col-md-1 col-sm-1"></div>
                 <div className="col-md-10 col-sm-10">
                   {liveConsole}
+
                   <div className="row">
-                    <div className="spinner">
-                      <div className="rect1"></div>
-                      <div className="rect2"></div>
-                      <div className="rect3"></div>
-                      <div className="rect4"></div>
-                      <div className="rect5"></div>
-                    </div>
-                      <h4 className="center-element white-text margin-bot">Waiting for the fight to begin...</h4>
+                    {playerConsole}
                   </div>
+
+
+                        <div className="spinner">
+                          <div className="rect1"></div>
+                          <div className="rect2"></div>
+                          <div className="rect3"></div>
+                          <div className="rect4"></div>
+                          <div className="rect5"></div>
+                        </div>
+
+                        <h4 className="center-element white-text margin-bot">Waiting for the next fight to begin...</h4>
+
+                        <div className="card-block">
+                          <div className="col-md-5"><h1 className="center-element white-text card-title">{this.props.red_fighter_fullName}</h1></div>
+                          <div className="col-md-2">
+                            <h1 className="center-element white-text card-title">VS</h1>
+                          </div>
+                          <div className="col-md-5"><h1 className="center-element white-text card-title">{this.props.blue_fighter_fullName}</h1></div>
+                        </div>
+
+
+
+
                 </div>
                 <div className="col-md-1 col-sm-1"></div>
+
+
+
+
             </div>
-            <div className="row">
-              <div className="col-md-1"></div>
-              <div className="col-md-10 card blank outline no-padding-left-right">
-                <div className="fight-title"><h5 className="center-element black-text">FIGHT {this.props.fight_number}</h5></div>
-                <div className="card-block">
-                  <div className="col-md-5"><h1 className="center-element white-text card-title">{this.props.red_fighter_fullName}</h1></div>
-                  <div className="col-md-2">
-                    <h1 className="center-element white-text card-title">VS</h1>
-                  </div>
-                  <div className="col-md-5"><h1 className="center-element white-text card-title">{this.props.blue_fighter_fullName}</h1></div>
-                </div>
-              </div>
-              <div className="col-md-1"></div>
-            </div>
+
             <div className="row">
               <div className="col-md-1"></div>
               <div className="col-md-10 no-padding-left-right">
 
-                <div className="col-sm-6 no-padding-left">
+
+                <div className="col-sm-12">
+                  <div className="card blank outline">
+                    <div className="card blank no-margin-bottom">
+                      <div className="fight-title"><h5 className="center-element black-text">Your Pick</h5></div>
+                      <div className="card-block">
+                        <div className="center-element">
+                            {finalPick}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-sm-12">
                   <div className="card blank outline">
                     <div className="card blank no-margin-bottom">
                       <div className="fight-title"><h5 className="center-element black-text">Rounds</h5></div>
@@ -208,18 +244,7 @@ class Intermission extends Component {
                   </div>
                 </div>
 
-                <div className="col-sm-6 no-padding-right">
-                  <div className="card blank outline">
-                    <div className="card blank no-margin-bottom">
-                      <div className="fight-title"><h5 className="center-element black-text">Your Pick</h5></div>
-                      <div className="card-block">
-                        <div className="center-element">
-                            {finalPick}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
               </div>
               <div className="col-md-1"></div>
 

@@ -28,24 +28,45 @@ class Play extends Component {
   componentDidMount() {
     var event_url = this.props.params.splat;
     var event_url_split = event_url.split('/');
+    console.log(event_url, event_url_split, "SPLTI SPLIT");
     this.eventStartListener(event_url_split[0]);
     this.tallyListener(event_url_split[0]);
-    this.insertScoreStructure(event_url_split[0]);
     this.getPhotos(event_url_split[0]);
   }
-  insertScoreStructure(url) {
+  insertScoreStructure(url, event_title, event_date) {
+    var that = this;
     var d = new Date();
     var n = d.toString();
     var obj = {
-      modifiedAt: n
+      modifiedAt: n,
+      event_title: event_title,
+      event_date: event_date,
+      score: 0,
+      displayName: this.props.displayName
     };
-    Firebase.database().ref('users/' + this.props.uid + '/' + url).set(obj);
+    var flag = false;
+    console.log('url', url);
+    var uid = this.props.uid;
+    return Firebase.database().ref('users/'+ url).once('value').then(function(snapshot) {
+      snapshot.forEach(function (data) {
+        var userEvent = data.val();
+        console.log(uid, userEvent, 'that props');
+        if (userEvent.uid) {
+          flag = true;
+        }
+      });
+      console.log(flag, obj, 'flag');
+      if (flag === false) {
+        Firebase.database().ref('users/' + url + '/' + uid).set(obj);
+      }
+    });
+    //
     this.currentScore(url);
   }
   currentScore(url) {
     var that = this;
     console.log(url, this.props.uid, 'preppin for score lookup');
-    var scoreRef = Firebase.database().ref('users/' + this.props.uid + '/' + url);
+    var scoreRef = Firebase.database().ref('users/' + url + '/' + this.props.uid);
     scoreRef.on('value', function(snapshot) {
       var score = snapshot.val();
       console.log(score, 'ooooo what is my SCORE?!?');
@@ -92,6 +113,7 @@ class Play extends Component {
         fight_num: event.fight_num
       };
       const fightNumber = parseInt(event.fight_num) +1;
+      console.log(controllerObj, 'controllOBJ');
       that.setState({controller: controllerObj, fight_pointer: event.fight_num, event_url: url, fightNumber: fightNumber});
       that.preEvent(url, event.fight_num);
       that.getFightPick(event.fight_num, that.props.uid, url, event.fights);
@@ -166,6 +188,8 @@ class Play extends Component {
         event_title: event.event_title,
         event_date: event.date
       });
+      that.setState({event_title: event.event_title});
+      that.insertScoreStructure(event_url, event.event_title, event.date);
       that.insertVoteStructure(event_url, fight_pointer, that.props.uid, event.fights.length);
     });
   }
@@ -192,9 +216,9 @@ class Play extends Component {
     const fight_status = this.state.controller.fight_status;
     const event_status = this.state.controller.event_status;
 
-    console.log(this.state.controller.event_status, event_status, 'event status');
+    //console.log(this.state.controller.event_status, event_status, 'event status');
 
-    if (fight_status === "INTERMISSION" || user_tally === "false") {
+    if (fight_status === "INTERMISSION") {
       //INTERMISSION OR USERS TALLY = FALSE
         fight = null;
         //postEvent = null;
@@ -221,6 +245,8 @@ class Play extends Component {
                         event_title={this.state.event_title}
                         event_date={this.state.event_date}
                         photos={this.state.photos}
+                        event_status={event_status}
+                        fight_status={fight_status}
                       />
         }
         else {
@@ -254,13 +280,16 @@ class Play extends Component {
                     event_title={this.state.event_title}
                     event_date={this.state.event_date}
                     photos={this.state.photos}
+                    event_status={event_status}
+                    fight_status={fight_status}
+
                   />
         }
         else {
           fight = <Spinner />
         }
     }
-    if (fight_status === "TALLY" && user_tally === "true") {
+    if (fight_status === "TALLY" && this.state.event_title && this.state.photos) {
       intermission = null;
       fight = null;
       //postEvent = null;
@@ -283,6 +312,8 @@ class Play extends Component {
                       event_title={this.state.event_title}
                       event_date={this.state.event_date}
                       photos={this.state.photos}
+                      event_status={event_status}
+                      fight_status={fight_status}
               />
     }
     if (event_status === "PRE" && fight_status === "PRE") {

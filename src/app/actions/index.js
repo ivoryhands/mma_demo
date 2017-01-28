@@ -53,11 +53,11 @@ export function signUpUser(credentials) {
         user = Firebase.auth().currentUser;
       }).then(function () {
         user.updateProfile({
-          photoURL: 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2Fuser-icon.png?alt=media&token=e56eac00-f553-40dd-9252-e2bda3a34f23',
+          photoURL: 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2F11868.jpg?alt=media&token=d643dc00-f379-4de9-8c25-4ed2d23ed04a',
           displayName: credentials.username
         });
         Firebase.database().ref('pics/' + user.uid).set({
-           photoURL: 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2Fuser-icon.png?alt=media&token=e56eac00-f553-40dd-9252-e2bda3a34f23',
+           photoURL: 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2F11868.jpg?alt=media&token=d643dc00-f379-4de9-8c25-4ed2d23ed04a',
            uid: user.uid
         });
         var d = new Date();

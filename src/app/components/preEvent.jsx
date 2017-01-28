@@ -24,12 +24,15 @@ class preEvent extends Component {
   render () {
 
     let liveConsole = null;
-
+    const event_status = "PRE";
+    const live_status = "PRE";
     if (this.props.event_url) {
       liveConsole = <LiveConsole
                       uid={this.props.uid}
                       event_url={this.props.event_url}
                       photos={this.props.photos}
+                      event_status={event_status}
+                      live_status={live_status}
                     />
     }
 

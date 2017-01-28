@@ -349,10 +349,21 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
 /************************************************
     LEADERBOARD
 ************************************************/
+.lb-span {
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+
+.lb-span-heavy {
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-weight: 700;
+}
+
 .lb-rank {
   float: left;
   margin-right: 1rem;
   margin-left: 1rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 .lb-rank h3 {
   padding-top: 10px;
@@ -362,18 +373,18 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
   float: left;
   width: 50px;
   height: 50px;
-  background-size: 40px;
+  background-size: 80px;
   background-repeat: no-repeat;
   margin-right: 1rem;
+  background-position: center;
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-top: 5px;
-  background-position: center;
 }
 .lb-name {
   float: left;
   padding-top: 10px;
   padding-bottom: 10px;
+
 }
 .lb-score {
   float: right;
@@ -382,9 +393,16 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
   padding-bottom: 10px;
 }
 .lb-row {
+  border-bottom-color: #333;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  color: #333;
+  padding: 10px;
+}
+
+.lb-container {
   background-color: white;
-  color: black;
-  padding: 0;
+  margin-top: 1rem;
   margin-bottom: 1rem;
 }
 

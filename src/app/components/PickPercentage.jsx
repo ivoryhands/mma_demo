@@ -58,6 +58,7 @@ class PickPercentage extends Component {
               strokeLinecap="square"
               strokeColor={this.state.color}
             />
+          <h5>Picked by Players</h5>
           </div>
 
     );

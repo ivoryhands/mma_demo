@@ -22,9 +22,11 @@ class LiveConsole extends Component {
   componentDidMount() {
     this.fightPickScaffolding();
     this.leaderboardConsole();
+    console.log(this.props.photos, 'LIVE CONSOLE PHOTOS!!!!');
 
   }
   leaderboardConsole() {
+    console.log("LEADERBOARD CONSOLE PROPSLEADERBOARD CONSOLE PROPS");
     var usersRef = Firebase.database().ref('leaderboard/' + this.props.event_url);
     var that = this;
 
@@ -36,6 +38,7 @@ class LiveConsole extends Component {
          var score = data.val();
          var count = 0;
          var flag = false;
+         console.log('SCORE LEADERBOARD', score, photos);
          for (let x of photos) {
            if (x.uid === score.uid) {
              var photoURL = x.photoURL;
@@ -47,7 +50,7 @@ class LiveConsole extends Component {
            console.log('true', score.score, score.displayName, photoURL);
          }
          if (flag === false) {
-           scoresArr.push([score.score, score.displayName, 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2Fuser-icon.png?alt=media&token=e56eac00-f553-40dd-9252-e2bda3a34f23']);
+           scoresArr.push([score.score, score.displayName, 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2F11868.jpg?alt=media&token=d643dc00-f379-4de9-8c25-4ed2d23ed04a']);
            console.log('false', score.score, score.displayName, 'default');
          }
          flag = false;
@@ -64,11 +67,12 @@ class LiveConsole extends Component {
         sortedScores.push(newObj);
       }
       that.setState({allScores: sortedScores});
+      console.log(sortedScores, 'sortedScores Leaderboard');
     });
 
   }
   getFightList() {
-    var picksRef = Firebase.database().ref('picks/'+this.props.uid+'/'+this.props.event_url+'/');
+    var picksRef = Firebase.database().ref('picks/'+this.props.event_url+'/'+this.props.uid+'/');
     var that = this;
 
     picksRef.on('value', function (snapshot) {
@@ -130,11 +134,6 @@ class LiveConsole extends Component {
     var that = this;
     fightsRef.once('value', function (snapshot) {
       snapshot.forEach(function(data) {
-        var key = data.val().key;
-        var key_split = key.split("-");
-        var last_key_split = key_split[key_split.length-1];
-        var fightKey = last_key_split;
-        console.log(fightKey, 'this is fighter Key');
         var fight = {
           blue: data.val().blue,
           red: data.val().red,
@@ -142,8 +141,7 @@ class LiveConsole extends Component {
           winner: '',
           round_pick: '',
           method_pick: '',
-          open: data.val().open,
-          key: fightKey
+          open: data.val().open
         };
         scaffoldingFightList.push(fight);
       });
@@ -155,8 +153,10 @@ class LiveConsole extends Component {
   }
   insertPicks (obj, i) {
     console.log(obj, i, 'insertPicks entered');
-    var ref = Firebase.database().ref('picks/' + this.props.uid + '/' + this.props.event_url + '/' + i);
-
+    Firebase.database().ref('/picks/'+uid+'/'+event_url).update({
+      uid: uid
+    });
+    return Firebase.database().ref().update(updates);
     function writeEventData(postData, fight_pointer, uid, event_url) {
       var updates = {};
       updates['/picks/'+uid+'/'+event_url+'/'+fight_pointer+'/'] = postData;
@@ -247,7 +247,7 @@ class LiveConsole extends Component {
       var methods = ['KNOCKOUT', 'SUBMISSION', 'DECISION'];
       var redFighter = x.red;
       var blueFighter = x.blue;
-      var fightKey = x.key;
+      //var fightKey = x.key;
       var fighters = [redFighter, blueFighter];
       if (total_rounds === "3") {
         var rounds = ["1", "2", "3"];
@@ -266,15 +266,17 @@ class LiveConsole extends Component {
         red: redFighter,
         total_rounds: total_rounds
       };
-      console.log(resultObj, fightKey);
+      console.log(resultObj);
       autoPickFights.push(resultObj);
     }
     console.log(autoPickFights, this.props.uid, this.props.event_url);
+    var uidObj = {uid: this.props.uid};
     var postData = {
       fights: autoPickFights,
     };
     var updates = {};
-    updates['picks/'+this.props.uid+'/'+this.props.event_url] = autoPickFights;
+    updates['picks/'+this.props.event_url+'/'+this.props.uid] = autoPickFights;
+    //updates['picks/'+this.props.event_url] = uidObj;
     return Firebase.database().ref().update(updates);
 
   }
@@ -283,12 +285,21 @@ class LiveConsole extends Component {
     let picks = null;
     let leaderboard = null;
     let howtoplay = null;
+    let autoPick = null;
+    //console.log(this.props.live_status, 'LIVE CONSOLE EVENT STATUS');
+    if (this.props.live_status !== "PRE") {
+      autoPick = true;
+    }
+    else {
+      autoPick = this.state.autoPickActivated;
+    }
+
     if (this.state.picksOpen) {
       picks = <Picks
                   fightList={this.state.fightList}
                   onChangeFighter={this.handleFightPicks}
                   onChangeAutoPick={this.handleAutoPick}
-                  autoPickActivated={this.state.autoPickActivated}
+                  autoPickActivated={autoPick}
               />
       leaderboard = null
       howtoplay = null
@@ -430,23 +441,26 @@ function Leaderboard(props) {
           <div className="card-block">
             <div className="center-element">
                 <h1>Leaderboard</h1>
-                {props.scores.map((item, i) => {
-                  return  <div className="row " key={i}>
-                            <div className="col-md-2"></div>
-                            <div className="col-md-8">
-                              <div className="card-block lb-row">
-                                <div className="lb-rank"><h3>{i+1}</h3></div>
-                                <div className="lb-pic" style={{backgroundImage: 'url('+item.photoURL+')'}}></div>
-                                <div className="lb-name"><h4>{item.uid}</h4></div>
-                                <div className="lb-score"><h4>{item.score}</h4></div>
-                              </div>
-                            </div>
-                            <div className="col-md-2"></div>
-                          </div>
-                })}
+                <div className="row">
+                  <div className="col-md-2"></div>
+                  <div className="col-md-8">
+                    <div className="lb-container">
+                      {props.scores.map((item, i) => {
+                        return    <div className="card-block lb-row" key={i}>
+                                      <div className="lb-rank"><span className="lb-span-heavy">{i+1}</span></div>
+                                      <div className="lb-pic" style={{backgroundImage: 'url('+item.photoURL+')'}}></div>
+                                      <div className="lb-name"><span className="lb-span">{item.uid}</span></div>
+                                      <div className="lb-score"><span className="lb-span">{item.score}</span></div>
+                                    </div>
+                      })}
+                    </div>
+                  <div className="col-md-2"></div>
+                  </div>
+                  </div>
+                </div>
             </div>
           </div>
-        </div>
+
 
   );
 }

@@ -13,6 +13,7 @@ import Profile from './components/users/Profile';
 import Play from './components/Play';
 import Events from './components/Events';
 import addEvent from './components/admin/addEvent';
+import Controller from './components/admin/Controller';
 import SignUp from './components/users/SignUp';
 import RequireAuth from './components/RequireAuth'
 import NotFound from './components/NotFound';
@@ -45,6 +46,7 @@ class Routes extends Component {
           <Route path="/profile" component={RequireAuth(Profile)} />
           <Route path="/play/*" component={RequireAuth(Play)} />
           <Route path="/admin/addEvent" component={addEvent} />
+          <Route path="/admin/Controller" component={Controller} />
           <Route path="*" component={NotFound} />
         </Route>
       </Router>
