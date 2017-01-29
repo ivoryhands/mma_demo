@@ -15,9 +15,6 @@ class TallyConsole extends Component {
 
               <div>
 
-
-
-
                     <div className="col-md-12">
                       <div className="card blank no-outline">
                         <div className="card-block orange-bg">
@@ -27,9 +24,6 @@ class TallyConsole extends Component {
                         </div>
                       </div>
                     </div>
-
-
-
 
                 <div className="col-md-12">
                   <div className="card blank outline">
@@ -52,8 +46,7 @@ class TallyConsole extends Component {
                   </div>
                 </div>
             </div>
-
-
+            
     );
   }
 }

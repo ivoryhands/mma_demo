@@ -133,6 +133,18 @@ class Controller extends Component {
     e.preventDefault();
     this.setState({url: e.target.value});
     this.getAllFights(e.target.value);
+    this.getEventInfo(e.target.value);
+  }
+  getEventInfo(url) {
+    var that = this;
+    var eventsRef = Firebase.database().ref('events/'+url);
+    eventsRef.once('value', function (snapshot) {
+      var eventData = snapshot.val();
+      that.setState({
+        event_title: eventData.event_title,
+        event_date: eventData.date
+      });
+    });
   }
   handleGetScores() {
     this.getScores();
@@ -222,7 +234,9 @@ class Controller extends Component {
     var result_round = this.state.result_round;
     var picks = this.state.picks;
     var scores = this.state.scores;
-    var leaderboard = [];
+    var fight_num = this.state.fight_num;
+    var leaderboard = {};
+    var fight_scores = {};
 
     for (let x of picks) {
       console.log(x, result_winner, result_round, result_method);
@@ -251,14 +265,25 @@ class Controller extends Component {
       var obj = {
         uid: uid,
         score: new_score,
-        displayName: displayName
+        displayName: displayName,
+        event_date: this.state.event_date,
+        event_title: this.state.event_title
       };
-      leaderboard.push(obj);
+      var fights = {
+
+      };
+      //leaderboard.push(obj);
+      leaderboard[uid] = obj;
     }
+    console.log(leaderboard, 'LEADERBOARD');
     var updates = {};
-    updates['/leaderboard/'+this.state.url+'/'] = leaderboard;
+    updates['/leaderboard/' + this.state.url + '/'] = leaderboard;
+    updates['/users/' + this.state.url + '/'] = leaderboard;
+
     return Firebase.database().ref().update(updates);
+
   }
+
 
   render() {
     let tally = null;

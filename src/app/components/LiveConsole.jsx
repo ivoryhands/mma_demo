@@ -22,11 +22,11 @@ class LiveConsole extends Component {
   componentDidMount() {
     this.fightPickScaffolding();
     this.leaderboardConsole();
-    console.log(this.props.photos, 'LIVE CONSOLE PHOTOS!!!!');
+    //console.log(this.props.photos, 'LIVE CONSOLE PHOTOS!!!!');
 
   }
   leaderboardConsole() {
-    console.log("LEADERBOARD CONSOLE PROPSLEADERBOARD CONSOLE PROPS");
+    //console.log("LEADERBOARD CONSOLE PROPSLEADERBOARD CONSOLE PROPS");
     var usersRef = Firebase.database().ref('leaderboard/' + this.props.event_url);
     var that = this;
 
@@ -38,7 +38,7 @@ class LiveConsole extends Component {
          var score = data.val();
          var count = 0;
          var flag = false;
-         console.log('SCORE LEADERBOARD', score, photos);
+         //console.log('SCORE LEADERBOARD', score, photos);
          for (let x of photos) {
            if (x.uid === score.uid) {
              var photoURL = x.photoURL;
@@ -47,11 +47,11 @@ class LiveConsole extends Component {
          }
          if (flag === true) {
            scoresArr.push([score.score, score.displayName, photoURL]);
-           console.log('true', score.score, score.displayName, photoURL);
+          // console.log('true', score.score, score.displayName, photoURL);
          }
          if (flag === false) {
            scoresArr.push([score.score, score.displayName, 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2F11868.jpg?alt=media&token=d643dc00-f379-4de9-8c25-4ed2d23ed04a']);
-           console.log('false', score.score, score.displayName, 'default');
+           //console.log('false', score.score, score.displayName, 'default');
          }
          flag = false;
       });
@@ -67,7 +67,7 @@ class LiveConsole extends Component {
         sortedScores.push(newObj);
       }
       that.setState({allScores: sortedScores});
-      console.log(sortedScores, 'sortedScores Leaderboard');
+      //console.log(sortedScores, 'sortedScores Leaderboard');
     });
 
   }
@@ -152,7 +152,7 @@ class LiveConsole extends Component {
     });
   }
   insertPicks (obj, i) {
-    console.log(obj, i, 'insertPicks entered');
+    //console.log(obj, i, 'insertPicks entered');
     Firebase.database().ref('/picks/'+uid+'/'+event_url).update({
       uid: uid
     });
@@ -192,7 +192,7 @@ class LiveConsole extends Component {
     }
   }
   handleFightPicks(event) {
-    console.log(event.target.value, event.target.name, event.target.id, 'fightpickshandler');
+    //console.log(event.target.value, event.target.name, event.target.id, 'fightpickshandler');
     var a = this.state.fightList;
     var i = parseInt(event.target.id);
 
@@ -233,7 +233,7 @@ class LiveConsole extends Component {
 
   }
   handleAutoPick(event) {
-    console.log('autopick', this.state.fightList);
+    //console.log('autopick', this.state.fightList);
     this.setState({autoPickActivated: true});
     var that = this;
     setTimeout(function () {
@@ -266,10 +266,10 @@ class LiveConsole extends Component {
         red: redFighter,
         total_rounds: total_rounds
       };
-      console.log(resultObj);
+      //console.log(resultObj);
       autoPickFights.push(resultObj);
     }
-    console.log(autoPickFights, this.props.uid, this.props.event_url);
+    //console.log(autoPickFights, this.props.uid, this.props.event_url);
     var uidObj = {uid: this.props.uid};
     var postData = {
       fights: autoPickFights,
@@ -356,10 +356,11 @@ function mapStateToProps (state) {
 export default LiveConsole = connect(mapStateToProps)(LiveConsole);
 
 function Picks(props) {
-  //console.log(props, 'picks');
+
   const KNOCKOUT="KNOCKOUT";
   const SUBMISSION="SUBMISSION";
   const DECISION="DECISION";
+  console.log(props.fightList, "fightList");
   return (
         <div className="card blank  bg-50">
             <div className="center-element fightList">

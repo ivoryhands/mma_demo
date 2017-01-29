@@ -32,11 +32,17 @@ class Play extends Component {
     this.eventStartListener(event_url_split[0]);
     this.tallyListener(event_url_split[0]);
     this.getPhotos(event_url_split[0]);
+    this.currentScore(event_url_split[0]);
   }
-  insertScoreStructure(url, event_title, event_date) {
+  insertScoreStructure(url, event_title, event_date, event_length) {
     var that = this;
     var d = new Date();
     var n = d.toString();
+    var fightsArr = [];
+    for (let x = 0; x < event_length; x++) {
+      var fightObj = {score: 0};
+      fightsArr.push(fightObj);
+    }
     var obj = {
       modifiedAt: n,
       event_title: event_title,
@@ -45,22 +51,21 @@ class Play extends Component {
       displayName: this.props.displayName
     };
     var flag = false;
-    console.log('url', url);
     var uid = this.props.uid;
     return Firebase.database().ref('users/'+ url).once('value').then(function(snapshot) {
       snapshot.forEach(function (data) {
         var userEvent = data.val();
-        console.log(uid, userEvent, 'that props');
-        if (userEvent.uid) {
+        var userKey = data.key;
+        console.log('users URL', userEvent, flag, url, uid, userKey);
+        if (userKey === uid) {
           flag = true;
         }
       });
-      console.log(flag, obj, 'flag');
+      console.log('flag result:', flag);
       if (flag === false) {
         Firebase.database().ref('users/' + url + '/' + uid).set(obj);
       }
     });
-    //
     this.currentScore(url);
   }
   currentScore(url) {
@@ -113,7 +118,7 @@ class Play extends Component {
         fight_num: event.fight_num
       };
       const fightNumber = parseInt(event.fight_num) +1;
-      console.log(controllerObj, 'controllOBJ');
+      //console.log(controllerObj, 'controllOBJ');
       that.setState({controller: controllerObj, fight_pointer: event.fight_num, event_url: url, fightNumber: fightNumber});
       that.preEvent(url, event.fight_num);
       that.getFightPick(event.fight_num, that.props.uid, url, event.fights);
@@ -121,24 +126,24 @@ class Play extends Component {
     });
   }
   getFightPick(fight_pos, uid, url) {
-    console.log('getFightPick', fight_pos, uid, url);
-    var myPickRef = Firebase.database().ref('picks/'+uid+'/'+url+'/'+fight_pos);
+    //console.log('getFightPick', fight_pos, uid, url);
+    var myPickRef = Firebase.database().ref('picks/' + url + '/' + uid + '/' + fight_pos);
     var that = this;
     myPickRef.on('value', function (snapshot) {
       var picks = snapshot.val();
-      console.log(picks, 'picks');
+      //console.log(picks, 'picks');
       if (picks === null) {
-        console.log('picks are nullll');
+        //console.log('picks are nullll');
         that.setState({pickMade: false});
       }
       else {
-        console.log('oh shit picks made!!', picks.winner, picks.method_pick, picks.round_pick);
+        //console.log('oh shit picks made!!', picks.winner, picks.method_pick, picks.round_pick);
         that.setState({fighter_pick_name: picks.winner, method_pick_name: picks.method_pick, round_pick_name: picks.round_pick, pickMade: true});
       }
     });
   }
   getPhotos(url) {
-    console.log('getPhotos');
+    //console.log('getPhotos');
     var that = this;
     var photoRef = Firebase.database().ref('pics/');
     photoRef.once('value', function (snapshot) {
@@ -151,7 +156,7 @@ class Play extends Component {
         };
         photosArr.push(obj);
       });
-      console.log(photosArr, 'photos ARRAYU');
+      //console.log(photosArr, 'photos ARRAYU');
       that.setState({photos: photosArr})
     });
   }
@@ -189,7 +194,7 @@ class Play extends Component {
         event_date: event.date
       });
       that.setState({event_title: event.event_title});
-      that.insertScoreStructure(event_url, event.event_title, event.date);
+      that.insertScoreStructure(event_url, event.event_title, event.date, event.fights.length);
       that.insertVoteStructure(event_url, fight_pointer, that.props.uid, event.fights.length);
     });
   }

@@ -28,6 +28,7 @@ class Tally extends Component {
     var fight_pointer = this.props.fight_pointer;
     var score = 0;
     var that = this;
+    console.log('SET SCORE!', fight_pointer);
     return Firebase.database().ref('fight_results/' + url + '/' + fight_pointer).once('value').then(function(snapshot) {
       //console.log(snapshot.val(), 'snappers FR', url, fight_pointer, pick_winner, pick_round, pick_method);
       var result = snapshot.val();
@@ -35,30 +36,36 @@ class Tally extends Component {
       var result_round_finish = snapshot.val().round_finish;
       var result_winner = snapshot.val().winner;
       var color_winner = snapshot.val().color;
-      that.setState({result_method: result_method, result_round_finish: result_round_finish, result_winner: result_winner, color_winner: color_winner});
-      //console.log('scoring::', result_winner, pick_winner);
+      console.log(result_method, result_round_finish, result_winner, 'RESULTS!!');
+      that.setState({
+        result_method: result_method,
+        result_round_finish: result_round_finish,
+        result_winner: result_winner,
+        color_winner: color_winner
+      });
+      console.log('scoring::', result_winner, pick_winner);
       if (result_winner === pick_winner) {
         score = score + 100;
       }
       if (result_round_finish === pick_round) {
-        score = score + 50;
+        score = score + 25;
       }
       if (result_method === pick_method) {
         score = score + 50;
       }
-      //console.log(score, 'this is the score', result_winner, pick_winner, result_round_finish, pick_round, result_method, pick_method);
+      console.log(score, 'this is the score', result_winner, pick_winner, result_round_finish, pick_round, result_method, pick_method);
       that.setState({fight_score: score});
       //.log(that.props.uid, that.props.event_title, 'is UID here???');
-        function writeUserData(score, currentScore) {
-          console.log(score, currentScore, that.props.event_title, that.props.event_date, that.props.displayName, "writeUserData");
-          Firebase.database().ref('users/' + that.props.uid + '/' + url).set({
-            score: score + currentScore,
-            displayName: that.props.displayName
-          });
-          that.setState({total_score: score + currentScore, fight_score: score});
-          var obj = {displayName: that.props.displayName, uid: that.props.uid, score: score+currentScore};
-          Firebase.database().ref('leaderboard/'+url+'/'+that.props.uid).set(obj);
-        }
+      //  function writeUserData(score, currentScore) {
+      //    console.log(score, currentScore, that.props.event_title, that.props.event_date, that.props.displayName, "writeUserData");
+      //    Firebase.database().ref('users/' + that.props.uid + '/' + url).set({
+      //      score: score + currentScore,
+      //      displayName: that.props.displayName
+      //    });
+      //    that.setState({total_score: score + currentScore, fight_score: score});
+      //    var obj = {displayName: that.props.displayName, uid: that.props.uid, score: score+currentScore};
+      //    Firebase.database().ref('leaderboard/'+url+'/'+that.props.uid).set(obj);
+      //  }
       //writeUserData(score, that.props.currentScore);
     });
   }
@@ -69,13 +76,17 @@ class Tally extends Component {
 
   getPick () {
     var that = this;
-    //console.log(this.props.uid, this.props.fight_pointer, this.props.event_url, 'props');
-    return Firebase.database().ref('/picks/' + this.props.uid+'/'+this.props.event_url+'/'+this.props.fight_pointer).once('value').then(function(snapshot) {
-      //console.log(snapshot.val(), 'getPICK  snappers');
+    return Firebase.database().ref('/picks/' + this.props.event_url +'/' + this.props.uid + '/' + this.props.fight_pointer).once('value').then(function(snapshot) {
+      console.log("get Pick firebase!!");
       var picks = snapshot.val();
       var color_pick = picks.winner;
       //console.log(color_pick, 'color pick');
-      that.setState({fighter_pick: snapshot.val().fighter, round_pick: snapshot.val().round, method_pick: snapshot.val().method, color: snapshot.val().winner});
+      that.setState({
+        fighter_pick: snapshot.val().fighter,
+        round_pick: snapshot.val().round,
+        method_pick: snapshot.val().method,
+        color: snapshot.val().winner
+      });
       that.setScore(snapshot.val().winner, snapshot.val().round_pick, snapshot.val().method_pick);
     });
   }
@@ -107,12 +118,12 @@ class Tally extends Component {
 
 
     if (this.state.result_method === "DECISION") {
-      pick_str = this.state.result_winner + ' VIA ' + this.state.result_method;
-      //console.log(this.state.result_winner, this.state.result_method, 'decision!!!');
+      pick_str = this.state.result_winner + ' via ' + this.state.result_method;
+      console.log(this.state.result_winner, this.state.result_method, 'decision!!!');
     }
     else {
-      pick_str = this.state.result_winner + ' VIA ' + this.state.result_method + ' in ROUND ' + this.state.result_round_finish;
-      //console.log(this.state.result_winner, this.state.result_method, this.state.result_round_finish, ' no decision!!!');
+      pick_str = this.state.result_winner + ' via ' + this.state.result_method + ' in ROUND ' + this.state.result_round_finish;
+      console.log(this.state.result_winner, this.state.result_method, this.state.result_round_finish, ' no decision!!!');
     }
 
     if (this.props.pickMade) {
@@ -126,8 +137,8 @@ class Tally extends Component {
     if (!this.props.pickMade) {
       var str = 'N/A';
     }
-    //console.log(pick_str, 'PICK STR IS???');
-    if (this.props.event_url && this.props.photos) {
+    console.log(str, 'STR IS???');
+    if (this.props.event_url && this.props.photos && str && pick_str) {
       //console.log(pick_str, this.props.uid, this.props.event_url, this.props.fight_status, 'pick_str!!!');
       liveConsole =   <LiveConsole
                         uid={this.props.uid}
