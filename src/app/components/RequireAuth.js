@@ -11,7 +11,6 @@ export default function(WrappedComponent) {
 
         for (let key in localStorage) {
           if (key.startsWith("firebase:authUser:")) {
-
             hasLocalStorageUser = true;
           }
         }
@@ -23,9 +22,6 @@ export default function(WrappedComponent) {
     }
 
     render() {
-      //if (!this.props.uid) {
-      //  return <div>Loading...</div>
-      //}
       return <WrappedComponent {...this.props}/>
     }
   }

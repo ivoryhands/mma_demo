@@ -12,7 +12,7 @@ class Home extends Component {
       return <div></div>
     }
     else {
-      return  <div>
+      return  <div className="home-buttons">
                 <Link to ="signup" className="blocks" role="button">Sign Up</Link>
                 <Link to ="signin" className="blocks" role="button">Sign In</Link>
               </div>
@@ -23,13 +23,14 @@ class Home extends Component {
       <div>
           <section className="intro bg-cover">
             <div className="content">
-              <h1 className="white-text">ClashMMA</h1>
-              <p className="white-text">Clash against other fight fans as you make fight picks in realtime and compete for top spot.</p>
+              <h1 className="white-text">STRYD</h1>
+              <h5 className="white-text"><strong>Afrikaans</strong>.  From Dutch <em>strijd</em></h5><h5 className="white-text tab">1. Fight, Battle, Conflict.</h5>
+              <p className="white-text motto">Compete against other fight fans as you make fight picks in realtime and compete for top spot.</p>
               {this.showButtons()}
            </div>
           </section>
           <footer>
-              <span>Made by EGAP</span>
+              <span>Made by <a className="home-link" href="http://www.ericpage.ca/">Eric Page</a></span>
           </footer>
         </div>
       );

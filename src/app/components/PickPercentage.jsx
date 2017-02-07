@@ -16,17 +16,10 @@ class PickPercentage extends Component {
     };
   }
   componentDidMount() {
-    this.getStats();
+
   }
 
-  getStats () {
-    var that = this;
-    var pickCountRef = Firebase.database().ref('stats/' + this.props.event_url + '/' + this.props.fight_pointer);
-    pickCountRef.on('value', function(snapshot) {
-      console.log(snapshot.val(), 'getStats');
-      that.setState({redCount: snapshot.val().red, blueCount: snapshot.val().blue});
-    });
-  }
+
   render () {
     //const total = this.state.redCount + this.state.blueCount;
     const containerStyle = {
@@ -37,14 +30,17 @@ class PickPercentage extends Component {
      height: '150px',
     };
     let percent = 0;
-    var red = parseInt(this.state.redCount);
-    var blue = parseInt(this.state.blueCount);
+
+    var red = this.props.redPercent;
+    var blue = this.props.bluePercent;
     var total = blue + red;
     if (this.props.color === "red") {
+      //var red = parseInt(this.props.redPercent);
       percent = Math.round(red/total * 100);
       //this.setState=({ percent:percent });
     }
     if (this.props.color === "blue") {
+      //var blue = parseInt(this.state.bluePercent);
       percent = Math.round(blue/total * 100);
       //this.setState=({ percent:percent });
     }

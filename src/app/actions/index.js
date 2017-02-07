@@ -11,14 +11,13 @@ import Firebase from 'firebase';
 import imageUpload from './classes/imageUpload.js'
 
 const config = {
-    apiKey: "AIzaSyAPknhGQ-fbeyVOwWJk8DRyVoUa7FYIWZ0",
+  apiKey: "AIzaSyAPknhGQ-fbeyVOwWJk8DRyVoUa7FYIWZ0",
     authDomain: "mma-live.firebaseapp.com",
-    databaseURL: "mma-live.firebaseio.com",
+    databaseURL: "https://mma-live.firebaseio.com",
     storageBucket: "mma-live.appspot.com",
     messagingSenderId: "971036752073"
   };
   Firebase.initializeApp(config);
-
 
 export function updateProfile(forminput) {
   return function (dispatch) {
@@ -45,7 +44,7 @@ export function signInUser(credentials) {
 }
 
 export function signUpUser(credentials) {
-  console.log('signing up!');
+  //console.log('signing up!');
   var user = null;
   return function (dispatch) {
     Firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password)
@@ -62,7 +61,7 @@ export function signUpUser(credentials) {
         });
         var d = new Date();
         var n = d.toString();
-        console.log('signUpUser', user.uid, credentials.username, n);
+        //console.log('signUpUser', user.uid, credentials.username, n);
         Firebase.database().ref('users/' + user.uid).set({
            createdAt: n,
            displayName: credentials.username,
@@ -70,22 +69,29 @@ export function signUpUser(credentials) {
         });
       })
       .then(function() {
-          console.log('success!');
+          //console.log('success!');
           dispatch(initUser());
           dispatch(authUser());
       }).then(function() {
           browserHistory.push('/events');
       })
       .catch(function (error) {
-        console.log(error.code, 'error code is:')
+        //console.log(error.code, 'error code is:')
         dispatch(authError(error.code));
       });
   }
 }
 
 export function signOutUser(props) {
+  for (let key in localStorage) {
+    //console.log(key, 'key!');
+    if (key.substring(0,9) == 'firebase:') {
+      localStorage.removeItem(key);
+    }
+  }
   browserHistory.push('/');
-  console.log('Logged out!');
+  //console.log('Logged out!');
+
   return {
     type: SIGN_OUT_USER
   }
@@ -149,7 +155,7 @@ export function getUser() {
 //VERIFY IF TOKEN STILL VALID WHEN PAGE RELOADED
 export function verifyAuth() {
   return function (dispatch) {
-    console.log('verify stage 1');
+    //console.log('verify stage 1');
     Firebase.auth().onAuthStateChanged(user => {
       if (user) {
         //console.log('verify stage 2!');
@@ -157,7 +163,7 @@ export function verifyAuth() {
         dispatch(authUser());
       }
       else {
-        console.log("signed out!!");
+        //console.log("signed out!!");
         dispatch(signOutUser());
       }
     });

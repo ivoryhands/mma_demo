@@ -152,14 +152,14 @@ class LiveConsole extends Component {
     });
   }
   insertPicks (obj, i) {
-    //console.log(obj, i, 'insertPicks entered');
-    Firebase.database().ref('/picks/'+uid+'/'+event_url).update({
-      uid: uid
-    });
-    return Firebase.database().ref().update(updates);
+    console.log(obj, i, 'insertPicks entered');
+    //Firebase.database().ref('/picks/'+uid+'/'+event_url).update({
+    //  uid: uid
+    //});
+    //return Firebase.database().ref().update(updates);
     function writeEventData(postData, fight_pointer, uid, event_url) {
       var updates = {};
-      updates['/picks/'+uid+'/'+event_url+'/'+fight_pointer+'/'] = postData;
+      updates['/picks/'+event_url+'/'+uid+'/'+fight_pointer+'/'] = postData;
       return Firebase.database().ref().update(updates);
     }
 
@@ -243,11 +243,10 @@ class LiveConsole extends Component {
     var allFights = this.state.scaffoldingFightList;
     var autoPickFights = [];
     for (let x of allFights) {
-      var total_rounds = x.total_rounds;
+      var total_rounds = x.total_rounds.toString();
       var methods = ['KNOCKOUT', 'SUBMISSION', 'DECISION'];
       var redFighter = x.red;
       var blueFighter = x.blue;
-      //var fightKey = x.key;
       var fighters = [redFighter, blueFighter];
       if (total_rounds === "3") {
         var rounds = ["1", "2", "3"];
@@ -255,6 +254,7 @@ class LiveConsole extends Component {
       if (total_rounds === "5") {
         var rounds = ["1", "2", "3", "4", "5"];
       }
+      console.log(methods, fighters, rounds, "mfr");
       var randomMethod = methods[Math.floor(Math.random()*methods.length)];
       var randomFighter = fighters[Math.floor(Math.random()*fighters.length)];
       var randomRound = rounds[Math.floor(Math.random()*rounds.length)];
@@ -266,7 +266,7 @@ class LiveConsole extends Component {
         red: redFighter,
         total_rounds: total_rounds
       };
-      //console.log(resultObj);
+      console.log(resultObj, 'result obj autopick');
       autoPickFights.push(resultObj);
     }
     //console.log(autoPickFights, this.props.uid, this.props.event_url);
@@ -286,7 +286,7 @@ class LiveConsole extends Component {
     let leaderboard = null;
     let howtoplay = null;
     let autoPick = null;
-    //console.log(this.props.live_status, 'LIVE CONSOLE EVENT STATUS');
+
     if (this.props.live_status !== "PRE") {
       autoPick = true;
     }
@@ -332,7 +332,6 @@ class LiveConsole extends Component {
         <div className="center-element margin-auto">
         </div>
         <div className="one-spacer"></div>
-
       </div>
       <div className="row">
         {picks}
@@ -360,7 +359,6 @@ function Picks(props) {
   const KNOCKOUT="KNOCKOUT";
   const SUBMISSION="SUBMISSION";
   const DECISION="DECISION";
-  console.log(props.fightList, "fightList");
   return (
         <div className="card blank  bg-50">
             <div className="center-element fightList">
@@ -370,6 +368,13 @@ function Picks(props) {
             <ul>
                 {props.fightList.map((item, i) => {
                   if (item.open) {
+                    var roundDisable = null;
+                    if (item.method_pick != "DECISION") {
+                      var roundDisable = false;
+                    }
+                    else {
+                      var roundDisable = true;
+                    }
                     return  <div className="col-md-6 margin-bot pick-min" key={i}>
                                 <div className="card-block outline">
                                       <div className="col-md-5">
@@ -398,13 +403,13 @@ function Picks(props) {
                                         <div className="form-group">
                                           <label htmlFor="roundSelect">Round</label>
                                           {item.total_rounds === "3" ?
-                                            <select className="form-control select-center" id={i} name="round" onChange={props.onChangeFighter} value={item.round_pick}>
+                                            <select disabled={roundDisable} className="form-control select-center" id={i} name="round" onChange={props.onChangeFighter} value={item.round_pick}>
                                                 <option value="" disabled>--SELECT ROUND--</option>
                                                 <option value="1">ROUND 1</option>
                                                 <option value="2">ROUND 2</option>
                                                 <option value="3">ROUND 3</option>
                                             </select> :
-                                            <select className="form-control select-center" id={i} name="round" onChange={props.onChangeFighter} value={item.round_pick}>
+                                            <select disabled={roundDisable} className="form-control select-center" id={i} name="round" onChange={props.onChangeFighter} value={item.round_pick}>
                                                 <option value="" disabled>--SELECT ROUND--</option>
                                                 <option value="1">ROUND 1</option>
                                                 <option value="2">ROUND 2</option>

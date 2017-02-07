@@ -1,11 +1,11 @@
 {
-  "name": "express-react-redux-starter",
+  "name": "CLASHMMA",
   "version": "1.0.0",
-  "description": "MMALIVE",
+  "description": "CLASHMMA",
   "scripts": {
     "dev": "webpack-dev-server --config ./webpack/webpack-dev.config.js --watch --colors",
     "build": "rm -rf dist && webpack --config ./webpack/webpack-prod.config.js --colors",
-    "start": "PORT=8080 pm2 start ./server.js",
+    "start": "node ./server.js",
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
     "test:watch": "npm run test -- --watch",
     "lint": "eslint src test webpack"
@@ -26,10 +26,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DimitriMikadze/express-react-redux-starter"
+    "url": "git"
   },
-  "author": "EP",
-  "license": "MIT",
+  "author": "Eric Page",
+  "license": "CC",
   "devDependencies": {
     "babel-core": "^6.8.0",
     "babel-loader": "^6.2.4",

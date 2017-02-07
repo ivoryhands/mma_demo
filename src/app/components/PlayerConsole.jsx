@@ -28,7 +28,7 @@ class PlayerConsole extends Component {
                     <div className="card-block">
                       <div className="center-element">
                         {this.props.controllerTally ?
-                          <h4>Score: {this.props.currentScore}<span className="orange-text"> (+{this.props.fight_score})</span></h4> :
+                          <h4>Score: {this.props.currentScore}<span className="orange-text"> (+{this.props.fightScore})</span></h4> :
                           <h4>Score: {this.props.currentScore}</h4>
                         }
                       </div>

@@ -19,7 +19,7 @@ class SignUp extends Component {
     }
   }
   handleFormSubmit(formValues){
-    console.log(formValues);
+    //console.log(formValues);
     this.setState({error: true});
     this.props.signUpUser(formValues);
   }

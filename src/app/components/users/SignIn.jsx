@@ -19,7 +19,7 @@ class SignIn extends Component {
     }
   }
   handleFormSubmit(formValues){
-    console.log(formValues);
+    //console.log(formValues);
     this.setState({error: true});
     this.props.signInUser(formValues);
   }
@@ -86,7 +86,7 @@ export default SignIn = connect(mapStateToProps, Actions)(SignIn);
 
 function AuthMessage(props) {
   let auth_msg = null;
-  console.log(props, 'auth message props');
+  //console.log(props, 'auth message props');
   if (props.errorFlag) {
     auth_msg = <div className="alert alert-danger authorize">{ props.authenticationError }</div>
   }

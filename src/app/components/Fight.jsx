@@ -22,72 +22,10 @@ class Fight extends Component {
   }
   getPick() {
     var that = this;
-    console.log(this.props.uid, this.props.fight_pointer, this.props.event_url, 'props');
-    return Firebase.database().ref('/picks/' + this.props.event_url+'/'+this.props.uid+'/'+this.props.fight_pointer).once('value').then(function(snapshot) {
-      console.log(snapshot.val(), 'snappers');
-      var picks = snapshot.val();
-      if (picks.winner === picks.blue) {
-        var color_pick = "blue";
-      }
-      if (picks.winner === picks.red) {
-        var color_pick = "red";
-      }
-      console.log(color_pick, 'color pick');
-      that.setState({fighter_pick: snapshot.val().fighter, round_pick: snapshot.val().round, method_pick: snapshot.val().method, color: snapshot.val().winner});
-
-      //Submit Pick to stats
-
-      var postRef = Firebase.database().ref('stats/'+that.props.event_url+'/'+that.props.fight_pointer+'/');
-      postRef.transaction(function(post) {
-        console.log('post stats', that.props.event_url, that.props.fight_pointer, that.props.uid);
-        if (post) {
-          var uid = that.props.uid;
-          switch (color_pick) {
-            case "red":
-              if (post.users[uid] === 'red') {
-                console.log('red pick already in db');
-                break;
-              }
-              else if (post.users[uid] === 'blue'){
-                console.log('blue pick already in db, switch to red');
-                post.red++;
-                post.blue--;
-                post.users = {};
-                post.users[uid] = 'red';
-                break;
-              }
-              else {
-                console.log('increase red vote');
-                post.red++;
-                post.users = {};
-                post.users[uid] = 'red';
-                break;
-              }
-            case "blue":
-              if (post.users[uid] === 'blue') {
-                console.log('blue pick already in db');
-                break;
-              }
-              else if (post.users[uid] === 'red'){
-                console.log('red pick already in db, switch to blue');
-                post.blue++;
-                post.red--;
-                post.users = {};
-                post.users[uid] = 'blue';
-                break;
-              }
-              else {
-                console.log('increase blue vote');
-                post.blue++;
-                post.users = {};
-                post.users[uid] = 'blue';
-                break;
-              }
-          }
-        }
-        return post;
-      });
-    });
+    var percentageRef = Firebase.database().ref('stats/'+ this.props.event_url + '/' + this.props.fight_pointer);
+    percentageRef.on('value', function(snapshot) {
+      that.setState({redPercent: snapshot.val().red, bluePercent: snapshot.val().blue});
+    })
   }
   render () {
     let liveConsole = null;
@@ -123,6 +61,8 @@ class Fight extends Component {
                           event_url={this.props.event_url}
                           uid={this.props.uid}
                           color={red}
+                          redPercent={this.state.redPercent}
+                          bluePercent={this.state.bluePercent}
         />
       let blue = "blue";
       pickPercentageBlue = <PickPercentage
@@ -130,6 +70,8 @@ class Fight extends Component {
                           event_url={this.props.event_url}
                           uid={this.props.uid}
                           color={blue}
+                          redPercent={this.state.redPercent}
+                          bluePercent={this.state.bluePercent}
         />
       const status = "FIGHT IN PROGRESS";
       const controllerTally = false;

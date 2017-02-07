@@ -25,9 +25,9 @@ import './components/bundle.scss';
 
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore);
 const store = createStoreWithMiddleware(reducers,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-console.log(store.getState(), 'current state');
+//console.log(store.getState(), 'current state');
 
-console.log('verifyAuth ');
+//console.log('verifyAuth ');
 
 
 class Routes extends Component {
@@ -56,11 +56,7 @@ class Routes extends Component {
 
 
 class App extends Component {
-  //constructor (props) {
-  //  super(props);
-  //  store.dispatch(Actions.verifyAuth());
-  //  console.log(this.props, 'hey this is from APP');
-  //}
+
   render () {
 
       return (

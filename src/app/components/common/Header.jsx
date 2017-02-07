@@ -71,7 +71,7 @@ class Header extends Component {
   render () {
     return (
       <nav className="navbar fixed-top navbar-light bg-faded .zindex-topnav nav-bar-first">
-        <Link to="/" className="navbar-brand">ClashMMA</Link>
+        <Link to="/" className="navbar-brand">STRYD</Link>
         <ul className="nav navbar-nav">
           <li className="nav-item">
             <Link to="/" className="nav-link">Home</Link>

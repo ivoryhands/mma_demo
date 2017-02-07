@@ -10,7 +10,7 @@ class TallyConsole extends Component {
   }
 
   render () {
-    console.log('tally console!!', this.props.result_pick);
+    //console.log('tally console!!', this.props.result_pick);
     return (
 
               <div>
@@ -46,7 +46,7 @@ class TallyConsole extends Component {
                   </div>
                 </div>
             </div>
-            
+
     );
   }
 }

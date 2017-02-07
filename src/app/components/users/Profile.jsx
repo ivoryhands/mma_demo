@@ -18,30 +18,33 @@ class Profile extends Component {
 
   }
   handleImageLoaded() {
-    console.log('imageloaded true!');
+    //console.log('imageloaded true!');
     this.setState({imageLoaded: true});
   }
   renderSpinner() {
-    if (!this.state.imageLoaded) {
-      return <div className="spinnerDots">
-                <div className="double-bounce1"></div>
-                <div className="double-bounce2"></div>
+    var that = this;
+    var user = Firebase.auth().currentUser;
+    if (this.state.imageLoaded) {
+      return <div className="profile-image-parent">
+                <img src={user.photoURL}/>
               </div>
     }
     else {
-      return null;
+      return <div className="profile-image-parent">
+                <img src="http://placehold.it/200x200"/>
+              </div>
     }
-
   }
   getProfile() {
     var that = this;
     var user = Firebase.auth().currentUser;
-    console.log(user, 'user is logged in.....');
+    var bgImage = {
+      backgroundImage: 'url('+user.photoURL
+    }
+
     return <div className="profile-top">
               <div className="profile-image-parent">
-                  {this.renderSpinner()}
-                  <img src={user.photoURL} onLoad={this.handleImageLoaded.bind(this)}/>
-                }
+                  <div className="profile-image-bg" style={bgImage}></div>
               </div>
               <h3 className="white-text">{user.email}</h3>
               <h2 className="white-text">{user.displayName}</h2>
@@ -110,7 +113,6 @@ class Profile extends Component {
                 <div className="progress-bar" style={{width: this.state.progressBar}}>{this.state.progressBar}</div>
               </div>
           </div>
-
           <div className="col-md-2 col-sm-1"></div>
       </div>
     </div>

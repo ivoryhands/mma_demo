@@ -44,10 +44,10 @@ class Intermission extends Component {
       event_url : '',
       controller: ''
     };
-    console.log('intermission constructor');
+    //console.log('intermission constructor');
   }
   componentDidMount() {
-    console.log(this.props, 'INTERMISSION PROPS');
+    //console.log(this.props, 'INTERMISSION PROPS');
     //this.myPick();
   }
   myPick() {
@@ -61,7 +61,7 @@ class Intermission extends Component {
 
   }
   handleMethod(props) {
-    console.log(props.target.value);
+    //console.log(props.target.value);
     this.setState({method_pick: true, method_pick_name: props.target.value});
     if (props.target.value === "KNOCKOUT") {
       this.setState({ btn_tko_active: 'blocks active',
@@ -89,14 +89,14 @@ class Intermission extends Component {
     }
   }
   handleRedFighter(props) {
-    console.log('redFighterSelect');
+    //console.log('redFighterSelect');
     this.setState({fighter_pick: true, fighter_pick_name: props.target.name, fighter_color_pick: 'red'});
     this.setState({ btn_red_fighter_select: 'blocks-fighter btn-block no-margin-left active',
                     btn_blue_fighter_select: 'blocks-fighter btn-block no-margin-left'
                   });
   }
   handleBlueFighter(props) {
-    console.log('blueFighterSelect');
+    //console.log('blueFighterSelect');
     this.setState({fighter_pick: true, fighter_pick_name: props.target.name, fighter_color_pick: 'blue'});
     this.setState({ btn_blue_fighter_select: 'blocks-fighter btn-block no-margin-left active',
                     btn_red_fighter_select: 'blocks-fighter btn-block no-margin-left'
@@ -183,7 +183,6 @@ class Intermission extends Component {
                     {playerConsole}
                   </div>
 
-
                         <div className="spinner">
                           <div className="rect1"></div>
                           <div className="rect2"></div>
@@ -202,21 +201,14 @@ class Intermission extends Component {
                           <div className="col-md-5"><h1 className="center-element white-text card-title">{this.props.blue_fighter_fullName}</h1></div>
                         </div>
 
-
-
-
                 </div>
                 <div className="col-md-1 col-sm-1"></div>
-
-
-
 
             </div>
 
             <div className="row">
               <div className="col-md-1"></div>
               <div className="col-md-10 no-padding-left-right">
-
 
                 <div className="col-sm-12">
                   <div className="card blank outline">
@@ -244,10 +236,8 @@ class Intermission extends Component {
                   </div>
                 </div>
 
-
               </div>
               <div className="col-md-1"></div>
-
 
             </div>
         </div>
@@ -268,7 +258,7 @@ function mapStateToProps (state) {
 export default Intermission = connect(mapStateToProps)(Intermission);
 
 function MethodButton(props) {
-  console.log('method button');
+  //console.log('method button');
   return (  <div className="col-sm-6">
               <div className="card blank outline">
                 <div className="card blank no-margin-bottom">

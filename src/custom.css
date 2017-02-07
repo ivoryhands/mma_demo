@@ -144,6 +144,22 @@ a:active {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.tab {
+  margin-left: 1rem;
+}
+
+.motto {
+  margin-top: 2rem;
+}
+
+.home-buttons {
+  margin-top: 3rem;
+}
+
+.memo {
+  font-size: 12px;
+}
 /************************************************
     AUTOPICK
 ************************************************/
@@ -346,6 +362,16 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
 .glow-button:hover {
 
 }
+
+a.home-link:link {
+  color: black;
+}
+a.home-link:visited {
+  color: black;
+}
+a.home-link:hover {
+  color: black;
+}
 /************************************************
     LEADERBOARD
 ************************************************/
@@ -398,6 +424,7 @@ button:disabled, button:disabled:hover, button:disabled:focus, button:disabled:a
   border-bottom-style: solid;
   color: #333;
   padding: 10px;
+  background-color: white;
 }
 
 .lb-container {
@@ -697,10 +724,20 @@ section {
 }
 
 .profile-image-parent {
-  width: 100px;
+  width: 300px;
   margin: auto;
   text-align: center;
   margin-top: 3rem;
+}
+
+.profile-image-bg {
+  width: 200px;
+  height: 200px;
+  background-color: black;
+  background-position: center;
+  background-repeat: none;
+  margin: auto;
+  text-align: center;
 }
 
 .profile-image-parent img {

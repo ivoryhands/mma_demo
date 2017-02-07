@@ -18,6 +18,7 @@ class Controller extends Component {
         this.handleGetResults = this.handleGetResults.bind(this);
         this.handleGetPicks = this.handleGetPicks.bind(this);
         this.handleCalcScores = this.handleCalcScores.bind(this);
+        this.handleCalcPercentages = this.handleCalcPercentages.bind(this);
         this.state = {
 
         };
@@ -116,7 +117,13 @@ class Controller extends Component {
   fightStatusController(e) {
     e.preventDefault();
     if (e.target.value === "TALLY") {
-      this.setState({console: "tally"});
+      this.setState({console: "TALLY"});
+    }
+    if (e.target.value === "FIGHTING") {
+      this.setState({console: "FIGHTING"});
+    }
+    if (e.target.value === "TABULATING") {
+      this.setState({console: "TABULATING"});
     }
   }
   roundController(e) {
@@ -158,6 +165,47 @@ class Controller extends Component {
   handleCalcScores() {
     this.calcScores();
   }
+  handleCalcPercentages() {
+    this.calcPercentages();
+  }
+  calcPercentages() {
+    var that = this;
+    var percentagesRef = Firebase.database().ref('picks/'+this.state.url);
+    var percentagesArr = [];
+    var users = [];
+    var color_pick = [];
+    return percentagesRef.once('value').then(function(snapshot) {
+      snapshot.forEach(function(data) {
+        console.log(data.val(), 'calcPercentages');
+        users.push(data.val());
+      });
+      var red_count = 0;
+      var blue_count = 0;
+      for (let x of users) {
+        //console.log(x, that.state.fight_num, x[0]);
+        var winner = x[that.state.fight_num].winner;
+        var blue = x[that.state.fight_num].blue;
+        var red = x[that.state.fight_num].red;
+        console.log(winner, blue, red);
+        if (winner === blue) {
+          var winner_color = "blue";
+          blue_count++;
+        }
+        if (winner === red) {
+          var winner_color = "red";
+          red_count++;
+        }
+      }
+      var statsObj = {};
+      var statsObj2 = {};
+      statsObj["red"] = red_count;
+      statsObj["blue"] = blue_count;
+      statsObj2['stats/'+that.state.url+'/'+that.state.fight_num+'/'] = statsObj;
+      console.log(statsObj2);
+      return Firebase.database().ref().update(statsObj2);
+
+    });
+  }
   getScores() {
     var that = this;
     var scoreRef = Firebase.database().ref('users/'+this.state.url);
@@ -190,7 +238,7 @@ class Controller extends Component {
     var resultsRef = Firebase.database().ref('fight_results/'+this.state.url+'/'+fight_num);
     return resultsRef.once('value').then(function(snapshot) {
       var results = snapshot.val();
-      console.log(results);
+      console.log(results, 'getResults');
       var result_winner = results.winner;
       var result_round = results.round_finish;
       var result_method = results.method;
@@ -241,15 +289,26 @@ class Controller extends Component {
     for (let x of picks) {
       console.log(x, result_winner, result_round, result_method);
       var score = 0;
-      if (this.state.result_winner === x.winner) {
-        score = score + 100;
+      if (result_method != "DECISION") {
+        if (this.state.result_winner === x.winner) {
+          score = score + 100;
+        }
+        if (this.state.result_round === x.round) {
+          score = score + 25;
+        }
+        if (this.state.result_method === x.method) {
+          score = score + 50;
+        }
       }
-      if (this.state.result_round === x.round) {
-        score = score + 25;
+      else {
+        if (this.state.result_winner === x.winner) {
+          score = score + 100;
+        }
+        if (this.state.result_method === x.method) {
+          score = score + 50;
+        }
       }
-      if (this.state.result_method === x.method) {
-        score = score + 50;
-      }
+
       var uid;
       var current_score = 0;
       var displayName;
@@ -260,35 +319,61 @@ class Controller extends Component {
           displayName = y.displayName;
         }
       }
-      console.log(current_score, score, "SCORES");
+      //console.log(current_score, score, "SCORES");
       var new_score = current_score + score;
       var obj = {
         uid: uid,
         score: new_score,
         displayName: displayName,
         event_date: this.state.event_date,
-        event_title: this.state.event_title
+        event_title: this.state.event_title,
+        current_score: score
       };
-      var fights = {
 
-      };
-      //leaderboard.push(obj);
       leaderboard[uid] = obj;
     }
-    console.log(leaderboard, 'LEADERBOARD');
+    var fight_scoresObj = {};
+    Firebase.database().ref('fight_scores/' + this.state.url).once('value').then(function (snapshot) {
+        snapshot.forEach(function (data) {
+          var fight_scores = data.val();
+          console.log(fight_scores, "fight scores");
+          var key = data.key;
+
+          if (fight_scores) {
+            fight_scores[fight_num] = leaderboard[key].current_score;
+            fight_scoresObj[key] = fight_scores;
+          }
+          console.log(fight_scoresObj, 'fightscores object!!!!');
+          Firebase.database().ref('/fight_scores/' + that.state.url + '/').update(fight_scoresObj);
+        });
+        if (!snapshot.val()) {
+          for (let key in leaderboard) {
+            var newObj = {};
+            console.log(key, leaderboard[key]);
+            var uid = leaderboard[key].uid;
+            newObj[fight_num] = leaderboard[key].current_score;
+            newObj["key"] = uid;
+            fight_scoresObj[uid] = newObj;
+          }
+          //updates[] = fight_scoresObj;
+          Firebase.database().ref('/fight_scores/' + that.state.url + '/').set(fight_scoresObj);
+        }
+        //console.log(fight_scoresObj, leaderboard, 'fightScores object!');
+    });
+
+    //console.log(leaderboard, 'LEADERBOARD');
     var updates = {};
     updates['/leaderboard/' + this.state.url + '/'] = leaderboard;
     updates['/users/' + this.state.url + '/'] = leaderboard;
 
     return Firebase.database().ref().update(updates);
-
   }
-
 
   render() {
     let tally = null;
     let setscore = null;
-    if (this.state.console === "tally") {
+    let fight = null;
+    if (this.state.console === "TALLY") {
       tally = <div>
         {this.state.scaffoldingFightList.map((item, i) => {
             return  <div key={i}>
@@ -348,6 +433,13 @@ class Controller extends Component {
       tally = null;
       setscore = null;
     }
+    if (this.state.console === "FIGHTING") {
+      fight = <div>
+                <h2>{this.state.fight_num}</h2>
+                <h4>Calculate Fight Percentages</h4>
+                <button className="btn btn-secondary" onClick={this.handleCalcPercentages}>Calc Fight %</button>
+              </div>
+    }
 
     return (
       <div className="row">
@@ -362,8 +454,9 @@ class Controller extends Component {
                 <label htmlFor="eventURL">eventURL</label>
                   <select className="form-control select-center" name="event_url" onChange={this.eventURLController.bind(this)}>
                       <option value="">--SELECT EVENT--</option>
-                      <option value="ufc-fight-night-103">UFC FN 103</option>
+                      <option value="ufc-fight-night-104">UFC FN 104</option>
                       <option value="ufc-on-fox-23">UFC ON FOX 23</option>
+                      <option value="ufc-fight-night-103">UFC FN 103</option>
                   </select>
               </div>
               <div className="form-group">
@@ -372,7 +465,8 @@ class Controller extends Component {
                     <option value="">--SELECT FIGHT STATUS--</option>
                     <option value="PRE">PRE-FIGHT</option>
                     <option value="INTERMISSION">INTERMISSION</option>
-                    <option value="FIGHT">FIGHT</option>
+                    <option value="FIGHTING">FIGHT</option>
+                    <option value="TABULATING">TABULATING</option>
                     <option value="TALLY">TALLY</option>
                     <option value="POST">POST-FIGHT</option>
                 </select>
@@ -400,6 +494,7 @@ class Controller extends Component {
           <div className="col-md-4">
             <div className="card card-block login card-outline-secondary opaque-card">
                 {tally}
+                {fight}
             </div>
           </div>
           <div className="col-md-4">

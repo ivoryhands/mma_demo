@@ -34,11 +34,11 @@ class postEvent extends Component {
          }
          if (flag === true) {
            scoresArr.push([score.score, score.displayName, photoURL]);
-           console.log('true', score.score, score.displayName, photoURL);
+           //console.log('true', score.score, score.displayName, photoURL);
          }
          if (flag === false) {
            scoresArr.push([score.score, score.displayName, 'https://firebasestorage.googleapis.com/v0/b/mma-live.appspot.com/o/images%2Fuser-icon.png?alt=media&token=e56eac00-f553-40dd-9252-e2bda3a34f23']);
-           console.log('false', score.score, score.displayName, 'default');
+           //console.log('false', score.score, score.displayName, 'default');
          }
          flag = false;
       });
@@ -51,15 +51,15 @@ class postEvent extends Component {
           score: x[0],
           photoURL: x[2]
         };
-        console.log(newObj, "NEW OBJ");
+        //console.log(newObj, "NEW OBJ");
         sortedScores.push(newObj);
       }
       that.setState({allScores: sortedScores});
-      console.log(that.state.allScores);
+      //console.log(that.state.allScores);
     });
   }
   render () {
-    console.log(this.state.allScores, "STATE!!");
+    //console.log(this.state.allScores, "STATE!!");
     //console.log(this.state.allScores, 'this is allscores');
 
     return (
@@ -110,13 +110,9 @@ class postEvent extends Component {
                     </div>
                   </div>
                 </div>
-
-
-
               </div>
               <div className="col-md-1"></div>
             </div>
-
         </div>
       </div>
     );

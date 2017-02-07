@@ -20,7 +20,36 @@ class Tally extends Component {
   }
   componentDidMount() {
     this.getPick();
-    console.log("PROPS PHOTOS!!!", this.props.photos);
+    this.getScores();
+    //console.log("PROPS PHOTOS!!!", this.props.photos);
+  }
+  getScores() {
+    var that = this;
+    var fight_pos = String(this.props.fight_pointer);
+
+    return Firebase.database().ref('fight_scores/'+this.props.event_url+'/'+this.props.uid).once('value').then(function(snapshot) {
+      var total_score = 0;
+      var current_fight_score = 0;
+      //var
+      snapshot.forEach(function (data) {
+        var fight_score = data.val();
+        var key = String(data.key);
+
+        //var current_score = fights.fight_pos;
+        //console.log(fight_score, key, "gettin scores!!");
+        if (key !== "key") {
+          //console.log('key != uid', all_scores);
+          total_score = total_score + fight_score;
+        }
+        if (key === fight_pos) {
+          //console.log('key = fight pointer', key, that.props.fight_pointer);
+          //console.log('key === fight_pos', key, fight_pos);
+          current_fight_score = fight_score;
+        }
+      });
+      //console.log(current_fight_score, 'current_fight_score');
+      that.setState({total_score: total_score, current_fight_score: current_fight_score});
+    });
   }
   setScore(pick_winner, pick_round, pick_method) {
     //console.log('SET SCORE!!!', this.props.event_url, this.props.fight_pointer, this.props.event_title);
@@ -28,7 +57,7 @@ class Tally extends Component {
     var fight_pointer = this.props.fight_pointer;
     var score = 0;
     var that = this;
-    console.log('SET SCORE!', fight_pointer);
+    //console.log('SET SCORE!', fight_pointer);
     return Firebase.database().ref('fight_results/' + url + '/' + fight_pointer).once('value').then(function(snapshot) {
       //console.log(snapshot.val(), 'snappers FR', url, fight_pointer, pick_winner, pick_round, pick_method);
       var result = snapshot.val();
@@ -36,25 +65,25 @@ class Tally extends Component {
       var result_round_finish = snapshot.val().round_finish;
       var result_winner = snapshot.val().winner;
       var color_winner = snapshot.val().color;
-      console.log(result_method, result_round_finish, result_winner, 'RESULTS!!');
+      //console.log(result_method, result_round_finish, result_winner, 'RESULTS!!');
       that.setState({
         result_method: result_method,
         result_round_finish: result_round_finish,
         result_winner: result_winner,
         color_winner: color_winner
       });
-      console.log('scoring::', result_winner, pick_winner);
-      if (result_winner === pick_winner) {
-        score = score + 100;
-      }
-      if (result_round_finish === pick_round) {
-        score = score + 25;
-      }
-      if (result_method === pick_method) {
-        score = score + 50;
-      }
-      console.log(score, 'this is the score', result_winner, pick_winner, result_round_finish, pick_round, result_method, pick_method);
-      that.setState({fight_score: score});
+      //console.log('scoring::', result_winner, pick_winner);
+      //if (result_winner === pick_winner) {
+      //  score = score + 100;
+      //}
+      //if (result_round_finish === pick_round) {
+      //  score = score + 25;
+      //}
+      //i//f (result_method === pick_method) {
+      //  score = score + 50;
+      //}
+      //console.log(score, 'this is the score', result_winner, pick_winner, result_round_finish, pick_round, result_method, pick_method);
+      //that.setState({fight_score: score});
       //.log(that.props.uid, that.props.event_title, 'is UID here???');
       //  function writeUserData(score, currentScore) {
       //    console.log(score, currentScore, that.props.event_title, that.props.event_date, that.props.displayName, "writeUserData");
@@ -77,7 +106,7 @@ class Tally extends Component {
   getPick () {
     var that = this;
     return Firebase.database().ref('/picks/' + this.props.event_url +'/' + this.props.uid + '/' + this.props.fight_pointer).once('value').then(function(snapshot) {
-      console.log("get Pick firebase!!");
+      //console.log("get Pick firebase!!");
       var picks = snapshot.val();
       var color_pick = picks.winner;
       //console.log(color_pick, 'color pick');
@@ -119,11 +148,11 @@ class Tally extends Component {
 
     if (this.state.result_method === "DECISION") {
       pick_str = this.state.result_winner + ' via ' + this.state.result_method;
-      console.log(this.state.result_winner, this.state.result_method, 'decision!!!');
+      //console.log(this.state.result_winner, this.state.result_method, 'decision!!!');
     }
     else {
       pick_str = this.state.result_winner + ' via ' + this.state.result_method + ' in ROUND ' + this.state.result_round_finish;
-      console.log(this.state.result_winner, this.state.result_method, this.state.result_round_finish, ' no decision!!!');
+      //console.log(this.state.result_winner, this.state.result_method, this.state.result_round_finish, ' no decision!!!');
     }
 
     if (this.props.pickMade) {
@@ -131,13 +160,13 @@ class Tally extends Component {
         var str = this.props.pickFighter +' via '+ this.props.pickMethod;
       }
       else {
-        var str = this.props.pickFighter +' via '+ this.props.pickMethod +' in Round '+ this.props.pickRound;
+        var str = this.props.pickFighter +' via '+ this.props.pickMethod +' in ROUND '+ this.props.pickRound;
       }
     }
     if (!this.props.pickMade) {
       var str = 'N/A';
     }
-    console.log(str, 'STR IS???');
+    //console.log(str, 'STR IS???');
     if (this.props.event_url && this.props.photos && str && pick_str) {
       //console.log(pick_str, this.props.uid, this.props.event_url, this.props.fight_status, 'pick_str!!!');
       liveConsole =   <LiveConsole
@@ -153,9 +182,9 @@ class Tally extends Component {
       playerConsole = <PlayerConsole
                         round={this.props.round}
                         status={status}
-                        fight_score={this.state.fight_score}
+                        fightScore={this.state.current_fight_score}
                         controllerTally={controllerTally}
-                        currentScore={this.props.currentScore}
+                        totalScore={this.state.total_score}
                       />
 
       tallyConsole = <TallyConsole

@@ -8,7 +8,8 @@ import Tally from './Tally.jsx';
 import Spinner from './Spinner.jsx';
 import PreEvent from './preEvent.jsx';
 import PostEvent from './postEvent.jsx';
-
+import Tabulating from './Tabulating.jsx';
+import Preparing from './Preparing.jsx';
 
 class Play extends Component {
   constructor(props) {
@@ -28,13 +29,14 @@ class Play extends Component {
   componentDidMount() {
     var event_url = this.props.params.splat;
     var event_url_split = event_url.split('/');
-    console.log(event_url, event_url_split, "SPLTI SPLIT");
+    //console.log(event_url, event_url_split, "SPLTI SPLIT");
     this.eventStartListener(event_url_split[0]);
     this.tallyListener(event_url_split[0]);
     this.getPhotos(event_url_split[0]);
     this.currentScore(event_url_split[0]);
   }
-  insertScoreStructure(url, event_title, event_date, event_length) {
+  insertScoreStructure(url, event_title, event_date, event_length, fight_pointer) {
+    //console.log('insertscorestructure');
     var that = this;
     var d = new Date();
     var n = d.toString();
@@ -43,6 +45,9 @@ class Play extends Component {
       var fightObj = {score: 0};
       fightsArr.push(fightObj);
     }
+    /***********************
+      USERS INSERT
+    ***********************/
     var obj = {
       modifiedAt: n,
       event_title: event_title,
@@ -52,31 +57,72 @@ class Play extends Component {
     };
     var flag = false;
     var uid = this.props.uid;
-    return Firebase.database().ref('users/'+ url).once('value').then(function(snapshot) {
+    Firebase.database().ref('users/'+ url).once('value').then(function(snapshot) {
       snapshot.forEach(function (data) {
         var userEvent = data.val();
         var userKey = data.key;
-        console.log('users URL', userEvent, flag, url, uid, userKey);
         if (userKey === uid) {
           flag = true;
         }
       });
-      console.log('flag result:', flag);
       if (flag === false) {
         Firebase.database().ref('users/' + url + '/' + uid).set(obj);
       }
     });
-    this.currentScore(url);
-  }
-  currentScore(url) {
-    var that = this;
-    console.log(url, this.props.uid, 'preppin for score lookup');
-    var scoreRef = Firebase.database().ref('users/' + url + '/' + this.props.uid);
-    scoreRef.on('value', function(snapshot) {
-      var score = snapshot.val();
-      console.log(score, 'ooooo what is my SCORE?!?');
-      that.setState({currentScore: score.score})
+
+    /***********************
+      FIGHT SCORES INSERT
+    ***********************/
+    var objFS = {
+      key: uid
+    };
+    //console.log('fight results url', url)
+    Firebase.database().ref('fight_scores/'+url).once('value').then(function (snapshot) {
+      //console.log('fight results');
+      var flag_fs = false;
+      snapshot.forEach(function (data) {
+        var fight_scores = data.val();
+        var userKey = data.key;
+        //console.log(userKey, uid, 'fight scores', flag_fs);
+        if (userKey === uid) {
+          flag_fs = true;
+        }
+      });
+      //console.log('flag fs', flag_fs);
+      if (flag_fs === false) {
+        //console.lgo('flagFS is false!!');
+        Firebase.database().ref('fight_scores/' + url + '/' + uid).set(objFS);
+      }
     });
+    this.currentScore(url, uid, fight_pointer);
+  }
+  currentScore(url, uid, fight_pointer) {
+    var that = this;
+
+    var scoresRef = Firebase.database().ref('fight_scores/' + url + '/' + uid);
+    scoresRef.on('value', function(snapshot) {
+      var total_score = 0;
+      var current_fight_score = 0;
+      snapshot.forEach(function (data) {
+        var fight_score = data.val();
+        var key = String(data.key);
+
+        if (key !== "key") {
+          total_score = total_score + fight_score;
+        }
+      });
+      that.setState({currentScore: total_score});
+    });
+
+
+
+    //console.log(url, this.props.uid, 'preppin for score lookup');
+    //var scoreRef = Firebase.database().ref('users/' + url + '/' + this.props.uid);
+    //scoreRef.on('value', function(snapshot) {
+      //var score = snapshot.val();
+      //console.log(score, 'ooooo what is my SCORE?!?');
+      //that.setState({currentScore: score.score})
+    //});
   }
   insertVoteStructure(url, fight_pointer, uid, event_length) {
     var ref = Firebase.database().ref('stats/'+url);
@@ -105,7 +151,7 @@ class Play extends Component {
     /*  Listen for Controller changes from Firebase and put into state
     *   @params controllerObj = holds current Controller Object from Firebase
     */
-    console.log('eventListener');
+    //console.log('eventListener');
     var that = this;
     var controllerObj = {};
     var eventStatusRef = Firebase.database().ref('controller/events/' + url);
@@ -194,8 +240,8 @@ class Play extends Component {
         event_date: event.date
       });
       that.setState({event_title: event.event_title});
-      that.insertScoreStructure(event_url, event.event_title, event.date, event.fights.length);
-      that.insertVoteStructure(event_url, fight_pointer, that.props.uid, event.fights.length);
+      that.insertScoreStructure(event_url, event.event_title, event.date, event.fights.length, fight_pointer);
+      //that.insertVoteStructure(event_url, fight_pointer, that.props.uid, event.fights.length);
     });
   }
   nameSplit(name) {
@@ -216,6 +262,8 @@ class Play extends Component {
     let tally = null;
     let preEvent = null;
     let postEvent = null;
+    let tabulating = null;
+    let preparing = null;
 
     let user_tally = localStorage.getItem('tally');
     const fight_status = this.state.controller.fight_status;
@@ -360,7 +408,56 @@ class Play extends Component {
       }
 
     }
-
+    if (fight_status === "TABULATING") {
+      tabulating = <Tabulating
+                      red_fighter_fullName={this.state.red_fighter_fullName}
+                      red_fighter_firstName={this.state.red_fighter_firstName}
+                      red_fighter_lastName={this.state.red_fighter_lastName}
+                      blue_fighter_fullName={this.state.blue_fighter_fullName}
+                      blue_fighter_firstName={this.state.blue_fighter_firstName}
+                      blue_fighter_lastName={this.state.blue_fighter_lastName}
+                      event_url={this.state.event_url}
+                      fight_pointer={this.state.fight_pointer}
+                      total_rounds={this.state.total_rounds}
+                      fight_number={this.state.fightNumber}
+                      uid_props={this.props.uid}
+                      pickMade={this.state.pickMade}
+                      pickFighter={this.state.fighter_pick_name}
+                      pickMethod={this.state.method_pick_name}
+                      pickRound={this.state.round_pick_name}
+                      currentScore={this.state.currentScore}
+                      event_title={this.state.event_title}
+                      event_date={this.state.event_date}
+                      photos={this.state.photos}
+                      event_status={event_status}
+                      fight_status={fight_status}
+                    />
+    }
+    if (fight_status === "PREPARING") {
+      preparing = <Preparing
+                      red_fighter_fullName={this.state.red_fighter_fullName}
+                      red_fighter_firstName={this.state.red_fighter_firstName}
+                      red_fighter_lastName={this.state.red_fighter_lastName}
+                      blue_fighter_fullName={this.state.blue_fighter_fullName}
+                      blue_fighter_firstName={this.state.blue_fighter_firstName}
+                      blue_fighter_lastName={this.state.blue_fighter_lastName}
+                      event_url={this.state.event_url}
+                      fight_pointer={this.state.fight_pointer}
+                      total_rounds={this.state.total_rounds}
+                      fight_number={this.state.fightNumber}
+                      uid_props={this.props.uid}
+                      pickMade={this.state.pickMade}
+                      pickFighter={this.state.fighter_pick_name}
+                      pickMethod={this.state.method_pick_name}
+                      pickRound={this.state.round_pick_name}
+                      currentScore={this.state.currentScore}
+                      event_title={this.state.event_title}
+                      event_date={this.state.event_date}
+                      photos={this.state.photos}
+                      event_status={event_status}
+                      fight_status={fight_status}
+                    />
+    }
 
     return (
         <div>
@@ -369,6 +466,8 @@ class Play extends Component {
           {intermission}
           {fight}
           {tally}
+          {tabulating}
+          {preparing}
         </div>
     );
   }
