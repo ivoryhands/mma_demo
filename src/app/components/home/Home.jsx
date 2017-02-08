@@ -23,14 +23,19 @@ class Home extends Component {
       <div>
           <section className="intro bg-cover">
             <div className="content">
-              <h1 className="white-text">STRYD</h1>
-              <h5 className="white-text"><strong>Afrikaans</strong>.  From Dutch <em>strijd</em></h5><h5 className="white-text tab">1. Fight, Battle, Conflict.</h5>
+              <div className="grad" id="cool"></div>
+              <div id="logo-below">
+                <h1 className="white-text" id="logo-title">STRYD</h1>
+                <h5 className="white-text text-drop"><strong>Afrikaans</strong>.  From Dutch <em>strijd</em></h5><h5 className="white-text tab text-drop">1. Fight, Battle, Conflict.</h5>
+
+              </div>
               <p className="white-text motto">Compete against other fight fans as you make fight picks in realtime and compete for top spot.</p>
               {this.showButtons()}
+
            </div>
           </section>
           <footer>
-              <span>Made by <a className="home-link" href="http://www.ericpage.ca/">Eric Page</a></span>
+              <span>Made by <a className="home-link" href="http://www.ericpage.ca/pt/">Eric Page</a></span>
           </footer>
         </div>
       );

@@ -11,11 +11,11 @@ import Firebase from 'firebase';
 import imageUpload from './classes/imageUpload.js'
 
 const config = {
-  apiKey: "AIzaSyAPknhGQ-fbeyVOwWJk8DRyVoUa7FYIWZ0",
-    authDomain: "mma-live.firebaseapp.com",
-    databaseURL: "https://mma-live.firebaseio.com",
-    storageBucket: "mma-live.appspot.com",
-    messagingSenderId: "971036752073"
+    apiKey: "AIzaSyAWbQbaEjyKQ4PXBujeGZODeXWtz76_UTU",
+    authDomain: "stryd-ade18.firebaseapp.com",
+    databaseURL: "https://stryd-ade18.firebaseio.com",
+    storageBucket: "stryd-ade18.appspot.com",
+    messagingSenderId: "192552150507"
   };
   Firebase.initializeApp(config);
 

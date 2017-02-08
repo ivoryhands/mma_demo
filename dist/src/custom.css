@@ -730,6 +730,16 @@ section {
   margin-top: 3rem;
 }
 
+.profile-image-bg {
+  width: 200px;
+  height: 200px;
+  background-color: black;
+  background-position: center;
+  background-repeat: none;
+  margin: auto;
+  text-align: center;
+}
+
 .profile-image-parent img {
   display: block;
   width: 100%;
